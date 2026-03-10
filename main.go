@@ -3,16 +3,16 @@ package main
 import ("fmt"; "log"; "unsafe"; "time"; w "golang.org/x/sys/windows")
 
 type ADLTemperature struct {
-	Size        int32
+	Size int32
 	Temperature int32
 }
 
 var (
-	dll                              = w.NewLazySystemDLL("atiadlxx.dll")
-	ADL_Main_Control_Create          = dll.NewProc("ADL_Main_Control_Create").Call
-	ADL_Main_Control_Destroy         = dll.NewProc("ADL_Main_Control_Destroy").Call
+	dll = w.NewLazySystemDLL("atiadlxx.dll")
+	ADL_Main_Control_Create = dll.NewProc("ADL_Main_Control_Create").Call
+	ADL_Main_Control_Destroy = dll.NewProc("ADL_Main_Control_Destroy").Call
 	ADL_Adapter_NumberOfAdapters_Get = dll.NewProc("ADL_Adapter_NumberOfAdapters_Get").Call
-	ADL_Overdrive5_Temperature_Get   = dll.NewProc("ADL_Overdrive5_Temperature_Get").Call
+	ADL_Overdrive5_Temperature_Get = dll.NewProc("ADL_Overdrive5_Temperature_Get").Call
 )
 
 func main() {
