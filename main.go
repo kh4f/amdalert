@@ -59,7 +59,7 @@ func main() {
 
 		if temp > 40 && rpm == 0 {
 			alert("GPU temperature > 40°C and fan is not spinning")
-		} else if temp > 50 {
+		} else if temp > 60 {
 			alert("GPU temperature > 60°C")
 		}
 
