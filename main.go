@@ -57,8 +57,11 @@ func main() {
 		rpm := fan.FanSpeed
 		fmt.Printf("GPU Fan: %d RPM\n", rpm)
 
-		if temp > 40 && rpm == 0 { alert("GPU temperature > 40°C and fan is not spinning") }
-		if temp > 60 { alert("GPU temperature > 60°C") }
+		if temp > 40 && rpm == 0 {
+			alert("GPU temperature > 40°C and fan is not spinning")
+		} else if temp > 50 {
+			alert("GPU temperature > 60°C")
+		}
 
 		time.Sleep(10 * time.Second)
 	}
