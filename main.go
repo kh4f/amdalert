@@ -23,6 +23,15 @@ var (
 	ADL_Overdrive5_FanSpeed_Get = dll.NewProc("ADL_Overdrive5_FanSpeed_Get").Call
 )
 
+func utf16(s string) *uint16 {
+    ptr, err := w.UTF16PtrFromString(s)
+    if err != nil { panic(err) }; return ptr
+}
+
+func alert(msg string) {
+	w.MessageBox(0, utf16(msg), utf16("Hotamd"), w.MB_OK|w.MB_ICONINFORMATION)
+}
+
 func main() {
 	adlMalloc := w.NewCallback(func(size int32) uintptr {
 		ptr, _ := w.LocalAlloc(0, uint32(size))
@@ -41,10 +50,15 @@ func main() {
 
 	for {
 		ADL_Overdrive5_Temperature_Get(0, 0, uintptr(unsafe.Pointer(&temp)))
-		fmt.Printf("GPU Temperature: %d °C\n", temp.Temperature/1000)
+		temp := temp.Temperature / 1000
+		fmt.Printf("GPU Temperature: %d °C\n", temp)
 
 		ADL_Overdrive5_FanSpeed_Get(0, 0, uintptr(unsafe.Pointer(&fan)))
-		fmt.Printf("GPU Fan: %d RPM\n", fan.FanSpeed)
+		rpm := fan.FanSpeed
+		fmt.Printf("GPU Fan: %d RPM\n", rpm)
+
+		if temp > 40 && rpm == 0 { alert("GPU temperature > 40°C and fan is not spinning") }
+		if temp > 60 { alert("GPU temperature > 60°C") }
 
 		time.Sleep(10 * time.Second)
 	}
