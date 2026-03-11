@@ -29,7 +29,7 @@ func utf16(s string) *uint16 {
 }
 
 func alert(msg string) {
-	w.MessageBox(0, utf16(msg), utf16("Hotamd"), w.MB_OK|w.MB_ICONINFORMATION)
+	w.MessageBox(0, utf16(msg), utf16("Hotamd"), w.MB_OK|w.MB_ICONWARNING)
 }
 
 func main() {
