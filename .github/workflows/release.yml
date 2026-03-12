@@ -24,7 +24,7 @@ jobs:
         run: go build
 
       - name: Create release archive
-        run: Compress-Archive -Path hotamd.exe -DestinationPath $env:ZIP
+        run: Compress-Archive -Path HotAMD.exe -DestinationPath $env:ZIP
 
       - name: Create GitHub release
         env:

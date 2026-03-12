@@ -1,68 +1,84 @@
 package main
 
-import ("fmt"; "log"; "unsafe"; "time"; w "golang.org/x/sys/windows")
+import ("bufio"; "fmt"; "os"; "os/exec"; "strings"; "syscall"; "golang.org/x/sys/windows")
 
-type ADLTemperature struct {
-	Size int32
-	Temperature int32
-}
-
-type ADLFanSpeedValue struct {
-	Size  int32
-	SpeedType int32
-	FanSpeed int32
-	Flags int32
-}
-
-var (
-	dll = w.NewLazySystemDLL("atiadlxx.dll")
-	ADL_Main_Control_Create = dll.NewProc("ADL_Main_Control_Create").Call
-	ADL_Main_Control_Destroy = dll.NewProc("ADL_Main_Control_Destroy").Call
-	ADL_Adapter_NumberOfAdapters_Get = dll.NewProc("ADL_Adapter_NumberOfAdapters_Get").Call
-	ADL_Overdrive5_Temperature_Get = dll.NewProc("ADL_Overdrive5_Temperature_Get").Call
-	ADL_Overdrive5_FanSpeed_Get = dll.NewProc("ADL_Overdrive5_FanSpeed_Get").Call
-)
-
-func utf16(s string) *uint16 {
-    ptr, err := w.UTF16PtrFromString(s)
-    if err != nil { panic(err) }; return ptr
-}
-
-func alert(msg string) {
-	w.MessageBox(0, utf16(msg), utf16("Hotamd"), w.MB_OK|w.MB_ICONWARNING)
-}
+var eventPtr = utf16("Global\\HotAMD")
 
 func main() {
-	adlMalloc := w.NewCallback(func(size int32) uintptr {
-		ptr, _ := w.LocalAlloc(0, uint32(size))
-		return uintptr(ptr)
-	})
-	ADL_Main_Control_Create(adlMalloc, 1)
-	defer ADL_Main_Control_Destroy()
-
-	var adapters int32
-	ADL_Adapter_NumberOfAdapters_Get(uintptr(unsafe.Pointer(&adapters)))
-	if adapters == 0 { log.Fatal("GPU adapters not found") }
-	fmt.Println("Adapters found:", adapters)
-
-	temp := ADLTemperature{Size: int32(unsafe.Sizeof(ADLTemperature{}))}
-	fan := ADLFanSpeedValue{Size: int32(unsafe.Sizeof(ADLFanSpeedValue{}))}
-
-	for {
-		ADL_Overdrive5_Temperature_Get(0, 0, uintptr(unsafe.Pointer(&temp)))
-		temp := temp.Temperature / 1000
-		fmt.Printf("GPU Temperature: %d °C\n", temp)
-
-		ADL_Overdrive5_FanSpeed_Get(0, 0, uintptr(unsafe.Pointer(&fan)))
-		rpm := fan.FanSpeed
-		fmt.Printf("GPU Fan: %d RPM\n", rpm)
-
-		if temp > 40 && rpm == 0 {
-			alert("GPU temperature > 40°C and fan is not spinning")
-		} else if temp > 60 {
-			alert("GPU temperature > 60°C")
-		}
-
-		time.Sleep(10 * time.Second)
+	initialize()
+	if len(os.Args) > 1 && os.Args[1] == "--daemon" {
+		runDaemon()
+	} else {
+		runCLI()
 	}
+	close()
+}
+
+func runDaemon() {
+	h, e := windows.CreateEvent(nil, 1, 0, eventPtr)
+	if e != nil { return }
+	defer windows.CloseHandle(h)
+	go start()
+	windows.WaitForSingleObject(h, windows.INFINITE)
+}
+
+func runCLI() {
+    reader := bufio.NewReader(os.Stdin)
+
+    for {
+		cmd := exec.Command("cmd", "/c", "cls")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+
+        fmt.Println("♨️ HotAMD")
+
+		isRunning := isRunning()
+
+
+		if isRunning {
+			getAdapters()
+			temp, fan := readGPU(0)
+			fmt.Printf("\nTemperature: %d°C\n", temp)
+			fmt.Printf("Fan: %d RPM", fan)
+		}
+		fmt.Print("\nDaemon: ")
+        if isRunning { fmt.Println("running") } else { fmt.Println("not running") }
+
+		fmt.Print("\n1) ")
+		if isRunning { fmt.Print("Stop ") } else { fmt.Print("Start ") }
+		fmt.Println("daemon")
+        fmt.Println("2) Exit")
+        fmt.Print("\n> ")
+
+        input, _ := reader.ReadString('\n')
+        input = strings.TrimSpace(input)
+
+        switch input {
+			case "1": if isRunning { stopDaemon() } else { startDaemon() }
+			case "2": return
+        }
+    }
+}
+
+func isRunning() bool {
+	handle, err := windows.OpenEvent(windows.SYNCHRONIZE, false, eventPtr)
+	if err != nil { return false }
+	windows.CloseHandle(handle)
+	return true
+}
+
+func startDaemon() {
+	if isRunning() { return }
+	exe, _ := os.Executable()
+	cmd := exec.Command(exe, "--daemon")
+	cmd.SysProcAttr = &syscall.SysProcAttr{ CreationFlags: 0x00000008 }
+	cmd.Start()
+}
+
+func stopDaemon() {
+	event, err := windows.OpenEvent(windows.EVENT_MODIFY_STATE, false, eventPtr)
+	if err != nil { return }
+	defer windows.CloseHandle(event)
+	windows.SetEvent(event)
+	fmt.Println("Stopping daemon...")
 }

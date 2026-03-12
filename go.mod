@@ -1,4 +1,4 @@
-module hotamd
+module HotAMD
 
 go 1.25.0
 
