@@ -38,13 +38,13 @@ func runCLI() {
 		fmt.Printf("Max temperature: %v°C\n", config.MaxTemp)
 		fmt.Printf("Max fan-off temperature: %v°C\n", config.MaxFanOffTemp)
 
-		fmt.Print("Daemon: ")
+		fmt.Print("Alerts: ")
 		isRunning := isRunning()
-        if isRunning { fmt.Println("running") } else { fmt.Println("not running") }
+        if isRunning { fmt.Println("on") } else { fmt.Println("off") }
 
 		fmt.Print("\n1) ")
-		if isRunning { fmt.Print("Stop ") } else { fmt.Print("Start ") }
-		fmt.Println("daemon")
+		if isRunning { fmt.Print("Disable ") } else { fmt.Print("Enable ") }
+		fmt.Println("alerts")
 
 		fmt.Println("2) Set max temperature")
 		fmt.Println("3) Set max fan-off temperature")
@@ -96,6 +96,7 @@ func isRunning() bool {
 
 func startDaemon() {
 	if isRunning() { return }
+	fmt.Println("Starting daemon...")
 	exe, _ := os.Executable()
 	cmd := exec.Command(exe, "--daemon")
 	cmd.SysProcAttr = &syscall.SysProcAttr{ CreationFlags: 0x00000008 }
@@ -105,7 +106,7 @@ func startDaemon() {
 func stopDaemon() {
 	handle, err := w.OpenEvent(w.EVENT_MODIFY_STATE, false, eventPtr)
 	if err != nil { return }
+	fmt.Println("Stopping daemon...")
 	defer w.CloseHandle(handle)
 	w.SetEvent(handle)
-	fmt.Println("Stopping daemon...")
 }
