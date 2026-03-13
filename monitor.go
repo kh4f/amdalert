@@ -1,6 +1,6 @@
 package main
 
-import ("log"; "unsafe"; "time"; w "golang.org/x/sys/windows")
+import ("unsafe"; "time"; w "golang.org/x/sys/windows")
 
 type ADLTemperature struct {
 	Size int32
@@ -32,19 +32,12 @@ func alert(msg string) {
 	w.MessageBox(0, utf16(msg), utf16("HotAMD"), w.MB_OK|w.MB_ICONWARNING)
 }
 
-func getAdapters() int32 {
-	var adapters int32
-	ADL_Adapter_NumberOfAdapters_Get(uintptr(unsafe.Pointer(&adapters)))
-	if adapters == 0 { log.Fatal("GPU adapters not found") }
-	return adapters
-}
-
-func readGPU(adapter uintptr) (temperature int32, fan int32) {
+func readGPU() (temperature int32, fan int32) {
 	temp := ADLTemperature{Size: int32(unsafe.Sizeof(ADLTemperature{}))}
 	fanSpeed := ADLFanSpeedValue{Size: int32(unsafe.Sizeof(ADLFanSpeedValue{}))}
 
-	ADL_Overdrive5_Temperature_Get(0, adapter, uintptr(unsafe.Pointer(&temp)))
-	ADL_Overdrive5_FanSpeed_Get(0, adapter, uintptr(unsafe.Pointer(&fanSpeed)))
+	ADL_Overdrive5_Temperature_Get(0, 0, uintptr(unsafe.Pointer(&temp)))
+	ADL_Overdrive5_FanSpeed_Get(0, 0, uintptr(unsafe.Pointer(&fanSpeed)))
 
 	return temp.Temperature / 1000, fanSpeed.FanSpeed
 }
@@ -63,8 +56,7 @@ func destroyADL() {
 
 func start() {
 	for {
-		getAdapters()
-		temp, rpm := readGPU(0)
+		temp, rpm := readGPU()
 		if temp > 40 && rpm == 0 {
 			alert("GPU temperature > 40°C and fan is not spinning")
 		} else if temp > 60 {
