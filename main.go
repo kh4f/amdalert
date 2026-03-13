@@ -50,7 +50,6 @@ func runCLI() {
 		fmt.Println("3) Set max fan-off temp")
 		fmt.Println("4) Exit")
 
-
         fmt.Print("\n> ")
 
         input, _ := reader.ReadString('\n')
