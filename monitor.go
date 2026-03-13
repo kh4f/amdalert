@@ -56,12 +56,15 @@ func destroyADL() {
 
 func start() {
 	for {
+		reloadConfigIfChanged()
+
 		temp, rpm := readGPU()
 		if int(temp) > config.MaxFanOffTemp && rpm == 0 {
 			alert("GPU temperature > " + fmt.Sprintf("%v", config.MaxFanOffTemp) + "°C and fan is not spinning")
 		} else if int(temp) > config.MaxTemp {
 			alert("GPU temperature > " + fmt.Sprintf("%v", config.MaxTemp) + "°C")
 		}
+
 		time.Sleep(10 * time.Second)
 	}
 }
