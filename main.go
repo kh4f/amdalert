@@ -33,11 +33,9 @@ func runCLI() {
 
 		fmt.Print("\nDaemon: ")
         if isRunning { fmt.Println("running") } else { fmt.Println("not running") }
-		if isRunning {
-			getAdapters()
-			temp, fan := readGPU(0)
-			fmt.Printf("GPU: %v°C / %v RPM\n", temp, fan)
-		}
+		getAdapters()
+		temp, fan := readGPU(0)
+		fmt.Printf("GPU: %v°C / %v RPM\n", temp, fan)
 
 		fmt.Print("\n1) ")
 		if isRunning { fmt.Print("Stop ") } else { fmt.Print("Start ") }
