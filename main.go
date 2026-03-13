@@ -6,11 +6,7 @@ var eventPtr = utf16("Global\\HotAMD")
 
 func main() {
 	initialize()
-	if len(os.Args) > 1 && os.Args[1] == "--daemon" {
-		runDaemon()
-	} else {
-		runCLI()
-	}
+	if len(os.Args) > 1 && os.Args[1] == "--daemon" { runDaemon() } else { runCLI() }
 	close()
 }
 
