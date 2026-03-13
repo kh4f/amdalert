@@ -57,7 +57,7 @@ func initialize() {
 	ADL_Main_Control_Create(adlMalloc, 1)
 }
 
-func close() {
+func destroyADL() {
 	ADL_Main_Control_Destroy()
 }
 
