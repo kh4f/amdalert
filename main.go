@@ -11,11 +11,11 @@ func main() {
 }
 
 func runDaemon() {
-	h, e := w.CreateEvent(nil, 1, 0, eventPtr)
-	if e != nil { return }
-	defer w.CloseHandle(h)
+	handle, err := w.CreateEvent(nil, 1, 0, eventPtr)
+	if err != nil { return }
+	defer w.CloseHandle(handle)
 	go start()
-	w.WaitForSingleObject(h, w.INFINITE)
+	w.WaitForSingleObject(handle, w.INFINITE)
 }
 
 func runCLI() {
@@ -28,10 +28,8 @@ func runCLI() {
 
         fmt.Println("♨️ HotAMD")
 
-		isRunning := isRunning()
-
-
 		fmt.Print("\nDaemon: ")
+		isRunning := isRunning()
         if isRunning { fmt.Println("running") } else { fmt.Println("not running") }
 		getAdapters()
 		temp, fan := readGPU(0)
@@ -71,9 +69,9 @@ func startDaemon() {
 }
 
 func stopDaemon() {
-	event, err := w.OpenEvent(w.EVENT_MODIFY_STATE, false, eventPtr)
+	handle, err := w.OpenEvent(w.EVENT_MODIFY_STATE, false, eventPtr)
 	if err != nil { return }
-	defer w.CloseHandle(event)
-	w.SetEvent(event)
+	defer w.CloseHandle(handle)
+	w.SetEvent(handle)
 	fmt.Println("Stopping daemon...")
 }
