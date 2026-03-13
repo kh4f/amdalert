@@ -46,8 +46,8 @@ func runCLI() {
 		if isRunning { fmt.Print("Disable ") } else { fmt.Print("Enable ") }
 		fmt.Println("alerts")
 
-		fmt.Println("2) Set max temperature")
-		fmt.Println("3) Set max fan-off temperature")
+		fmt.Println("2) Set max temp")
+		fmt.Println("3) Set max fan-off temp")
 		fmt.Println("4) Exit")
 
 
