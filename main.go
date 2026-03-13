@@ -1,6 +1,6 @@
 package main
 
-import ("bufio"; "fmt"; "os"; "os/exec"; "strings"; "syscall"; "golang.org/x/sys/windows")
+import ("bufio"; "fmt"; "time"; "os"; "os/exec"; "strings"; "syscall"; "golang.org/x/sys/windows")
 
 var eventPtr = utf16("Global\\HotAMD")
 
@@ -54,7 +54,9 @@ func runCLI() {
         input = strings.TrimSpace(input)
 
         switch input {
-			case "1": if isRunning { stopDaemon() } else { startDaemon() }
+			case "1":
+				if isRunning { stopDaemon() } else { startDaemon() }
+				time.Sleep(300 * time.Millisecond)
 			case "2": return
         }
     }
