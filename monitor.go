@@ -1,6 +1,6 @@
 package main
 
-import ("unsafe"; "time"; w "golang.org/x/sys/windows")
+import ("fmt"; "unsafe"; "time"; w "golang.org/x/sys/windows")
 
 type ADLTemperature struct {
 	Size int32
@@ -57,10 +57,10 @@ func destroyADL() {
 func start() {
 	for {
 		temp, rpm := readGPU()
-		if temp > 40 && rpm == 0 {
-			alert("GPU temperature > 40°C and fan is not spinning")
-		} else if temp > 60 {
-			alert("GPU temperature > 60°C")
+		if int(temp) > config.MaxFanOffTemp && rpm == 0 {
+			alert("GPU temperature > " + fmt.Sprintf("%v", config.MaxFanOffTemp) + "°C and fan is not spinning")
+		} else if int(temp) > config.MaxTemp {
+			alert("GPU temperature > " + fmt.Sprintf("%v", config.MaxTemp) + "°C")
 		}
 		time.Sleep(10 * time.Second)
 	}

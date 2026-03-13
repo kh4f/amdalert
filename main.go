@@ -6,6 +6,7 @@ var eventPtr = utf16("Global\\HotAMD")
 
 func main() {
 	initADL()
+	loadConfig()
 	if len(os.Args) > 1 && os.Args[1] == "--daemon" { runDaemon() } else { runCLI() }
 	destroyADL()
 }
