@@ -1,6 +1,6 @@
 package main
 
-import ("bufio"; "fmt"; "time"; "os"; "os/exec"; "strings"; "syscall"; "golang.org/x/sys/windows")
+import ("bufio"; "fmt"; "time"; "os"; "os/exec"; "strings"; "syscall"; w "golang.org/x/sys/windows")
 
 var eventPtr = utf16("Global\\HotAMD")
 
@@ -15,11 +15,11 @@ func main() {
 }
 
 func runDaemon() {
-	h, e := windows.CreateEvent(nil, 1, 0, eventPtr)
+	h, e := w.CreateEvent(nil, 1, 0, eventPtr)
 	if e != nil { return }
-	defer windows.CloseHandle(h)
+	defer w.CloseHandle(h)
 	go start()
-	windows.WaitForSingleObject(h, windows.INFINITE)
+	w.WaitForSingleObject(h, w.INFINITE)
 }
 
 func runCLI() {
@@ -63,9 +63,9 @@ func runCLI() {
 }
 
 func isRunning() bool {
-	handle, err := windows.OpenEvent(windows.SYNCHRONIZE, false, eventPtr)
+	handle, err := w.OpenEvent(w.SYNCHRONIZE, false, eventPtr)
 	if err != nil { return false }
-	windows.CloseHandle(handle)
+	w.CloseHandle(handle)
 	return true
 }
 
@@ -78,9 +78,9 @@ func startDaemon() {
 }
 
 func stopDaemon() {
-	event, err := windows.OpenEvent(windows.EVENT_MODIFY_STATE, false, eventPtr)
+	event, err := w.OpenEvent(w.EVENT_MODIFY_STATE, false, eventPtr)
 	if err != nil { return }
-	defer windows.CloseHandle(event)
-	windows.SetEvent(event)
+	defer w.CloseHandle(event)
+	w.SetEvent(event)
 	fmt.Println("Stopping daemon...")
 }
