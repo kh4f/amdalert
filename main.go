@@ -5,7 +5,7 @@ import ("bufio"; "fmt"; "time"; "os"; "os/exec"; "strings"; "syscall"; w "golang
 var eventPtr = utf16("Global\\HotAMD")
 
 func main() {
-	initialize()
+	initADL()
 	if len(os.Args) > 1 && os.Args[1] == "--daemon" { runDaemon() } else { runCLI() }
 	destroyADL()
 }

@@ -49,7 +49,7 @@ func readGPU(adapter uintptr) (temperature int32, fan int32) {
 	return temp.Temperature / 1000, fanSpeed.FanSpeed
 }
 
-func initialize() {
+func initADL() {
 	adlMalloc := w.NewCallback(func(size int32) uintptr {
 		ptr, _ := w.LocalAlloc(0, uint32(size))
 		return uintptr(ptr)
