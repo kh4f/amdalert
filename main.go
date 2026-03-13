@@ -35,6 +35,9 @@ func runCLI() {
 		temp, fan := readGPU()
 		fmt.Printf("\nGPU: %v°C / %v RPM\n", temp, fan)
 
+		fmt.Printf("Max temperature: %v°C\n", config.MaxTemp)
+		fmt.Printf("Max fan-off temperature: %v°C\n", config.MaxFanOffTemp)
+
 		fmt.Print("Daemon: ")
 		isRunning := isRunning()
         if isRunning { fmt.Println("running") } else { fmt.Println("not running") }
