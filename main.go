@@ -1,6 +1,9 @@
 package main
 
-import ("bufio"; "fmt"; "time"; "os"; "os/exec"; "strings"; "syscall"; w "golang.org/x/sys/windows")
+import (
+	"bufio"; "fmt"; "time"; "os"; "strconv"; "os/exec"; "strings"; "syscall";
+	w "golang.org/x/sys/windows"
+)
 
 var eventPtr = utf16("Global\\HotAMD")
 
@@ -39,7 +42,12 @@ func runCLI() {
 		fmt.Print("\n1) ")
 		if isRunning { fmt.Print("Stop ") } else { fmt.Print("Start ") }
 		fmt.Println("daemon")
-        fmt.Println("2) Exit")
+
+		fmt.Println("2) Set max temperature")
+		fmt.Println("3) Set max fan-off temperature")
+		fmt.Println("4) Exit")
+
+
         fmt.Print("\n> ")
 
         input, _ := reader.ReadString('\n')
@@ -49,7 +57,29 @@ func runCLI() {
 			case "1":
 				if isRunning { stopDaemon() } else { startDaemon() }
 				time.Sleep(300 * time.Millisecond)
-			case "2": return
+			case "2":
+				fmt.Print("Enter max temperature (°C): ")
+				input, _ := reader.ReadString('\n')
+				input = strings.TrimSpace(input)
+				val, err := strconv.Atoi(input)
+				if err != nil {
+					fmt.Println("Invalid input")
+				} else {
+					config.MaxTemp = val
+					saveConfig()
+				}
+			case "3":
+				fmt.Print("Enter max fan-off temperature (°C): ")
+				input, _ := reader.ReadString('\n')
+				input = strings.TrimSpace(input)
+				val, err := strconv.Atoi(input)
+				if err != nil {
+					fmt.Println("Invalid input")
+				} else {
+					config.MaxFanOffTemp = val
+					saveConfig()
+				}
+			case "4": return
         }
     }
 }
