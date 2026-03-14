@@ -21,7 +21,7 @@ jobs:
         run: echo -e ZIP=${GITHUB_REPOSITORY#*/}-$TAG.zip >> $GITHUB_ENV
 
       - name: Build
-        run: go build
+        run: go run build.go --build
 
       - name: Create release archive
         run: Compress-Archive -Path HotAMD.exe -DestinationPath $env:ZIP
