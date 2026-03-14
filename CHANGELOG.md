@@ -1,6 +1,18 @@
 # Changelog
 
 
+## &ensp; [` 📦 v0.3.0  `](https://github.com/kh4f/hotamd/compare/v0.2.0...v0.3.0)
+
+### &emsp; 🎁 Features
+- **Interactive CLI menu**: added daemon control and GPU information display directly in the command-line interface. [🡥](https://github.com/kh4f/hotamd/commit/4daea2a)
+- **Custom temperature limits**: configuration now supports `maxTemp` and `maxFanOffTemp` settings loaded from `config.json`. [🡥](https://github.com/kh4f/hotamd/commit/b781a3f)
+- **Configuration management**: daemon now monitors external changes to `config.json` and reloads automatically during runtime. [🡥](https://github.com/kh4f/hotamd/commit/0f4aa28)
+- **Temperature threshold configuration**: added interactive prompts to set maximum temperature and maximum fan-off temperature from the CLI. [🡥](https://github.com/kh4f/hotamd/commit/a3fdfb3)
+- **Configuration visibility**: current temperature and fan-off temperature settings now display in the CLI interface. [🡥](https://github.com/kh4f/hotamd/commit/5583305)
+
+##### &emsp;&emsp; [Full Changelog](https://github.com/kh4f/hotamd/compare/v0.2.0...v0.3.0) &ensp;•&ensp; Mar 14, 2026
+
+
 ## &ensp; [` 📦 v0.2.0  `](https://github.com/kh4f/hotamd/compare/v0.1.0...v0.2.0)
 
 ### &emsp; 🎁 Features
