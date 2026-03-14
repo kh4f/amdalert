@@ -2,22 +2,22 @@
 
 package main
 
-import ("slices"; "os"; "os/exec")
+import ("slices"; "os"; "os/exec"; "strings")
 
 func main() {
-    entry := "./cmd/hotamd"
-    var args []string
+    var cmd string
 
     switch {
-		case slices.Contains(os.Args, "--build"):
-			args = []string{"build", "-o", "HotAMD.exe", entry}
-		case slices.Contains(os.Args, "--run"):
-			args = []string{"run", entry}
+	case slices.Contains(os.Args, "--build"):
+		cmd = "go build -o HotAMD.exe ./cmd/hotamd"
+	case slices.Contains(os.Args, "--run"):
+		cmd = "go run ./cmd/hotamd"
+	case slices.Contains(os.Args, "--release"):
+		cmd = "bunx relion -b cmd/hotamd/main.go"
     }
 
-    cmd := exec.Command("go", args...)
-    cmd.Stdout = os.Stdout
-    cmd.Stderr = os.Stderr
-    cmd.Stdin = os.Stdin
-    cmd.Run()
+    args := strings.Fields(cmd)
+    execCmd := exec.Command(args[0], args[1:]...)
+    execCmd.Stdout, execCmd.Stderr, execCmd.Stdin = os.Stdout, os.Stderr, os.Stdin
+    execCmd.Run()
 }
