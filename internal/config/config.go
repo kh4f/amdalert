@@ -1,13 +1,13 @@
-package main
+package config
 
 import ("os"; "encoding/json")
 
-type Config struct {
+type ConfigT struct {
 	MaxTemp int `json:"maxTemp"`
 	MaxFanOffTemp int `json:"maxFanOffTemp"`
 }
 
-var config = Config{
+var Config = ConfigT{
 	MaxTemp: 60,
 	MaxFanOffTemp: 40,
 }
@@ -15,21 +15,21 @@ var config = Config{
 const configFile = "config.json"
 var configModTime int64
 
-func loadConfig() {
+func LoadConfig() {
 	data, err := os.ReadFile(configFile)
 	if err != nil {
-		saveConfig()
+		SaveConfig()
 		return
 	}
-	json.Unmarshal(data, &config)
+	json.Unmarshal(data, &Config)
 
 	info, err := os.Stat(configFile)
 	if err != nil { return }
 	configModTime = info.ModTime().Unix()
 }
 
-func saveConfig() {
-	data, _ := json.MarshalIndent(config, "", "  ")
+func SaveConfig() {
+	data, _ := json.MarshalIndent(Config, "", "  ")
 	os.WriteFile(configFile, data, 0644)
 
 	info, err := os.Stat(configFile)
@@ -38,11 +38,11 @@ func saveConfig() {
 	}
 }
 
-func reloadConfigIfChanged() {
+func ReloadConfigIfChanged() {
 	info, err := os.Stat(configFile)
 	if err != nil { return }
 
 	if info.ModTime().Unix() != configModTime {
-		loadConfig()
+		LoadConfig()
 	}
 }

@@ -1,6 +1,10 @@
-package main
+package monitor
 
-import ("fmt"; "unsafe"; "time"; w "golang.org/x/sys/windows")
+import (
+	"fmt"; "unsafe"; "time";
+	w "golang.org/x/sys/windows"
+	"hotamd/internal/config"
+)
 
 type ADLTemperature struct {
 	Size int32
@@ -23,16 +27,16 @@ var (
 	ADL_Overdrive5_FanSpeed_Get = dll.NewProc("ADL_Overdrive5_FanSpeed_Get").Call
 )
 
-func utf16(s string) *uint16 {
+func Utf16(s string) *uint16 {
     ptr, err := w.UTF16PtrFromString(s)
     if err != nil { panic(err) }; return ptr
 }
 
-func alert(msg string) {
-	w.MessageBox(0, utf16(msg), utf16("HotAMD"), w.MB_OK|w.MB_ICONWARNING)
+func Alert(msg string) {
+	w.MessageBox(0, Utf16(msg), Utf16("HotAMD"), w.MB_OK|w.MB_ICONWARNING)
 }
 
-func readGPU() (temperature int32, fan int32) {
+func ReadGPU() (temperature int32, fan int32) {
 	temp := ADLTemperature{Size: int32(unsafe.Sizeof(ADLTemperature{}))}
 	fanSpeed := ADLFanSpeedValue{Size: int32(unsafe.Sizeof(ADLFanSpeedValue{}))}
 
@@ -42,7 +46,7 @@ func readGPU() (temperature int32, fan int32) {
 	return temp.Temperature / 1000, fanSpeed.FanSpeed
 }
 
-func initADL() {
+func InitADL() {
 	adlMalloc := w.NewCallback(func(size int32) uintptr {
 		ptr, _ := w.LocalAlloc(0, uint32(size))
 		return uintptr(ptr)
@@ -50,19 +54,19 @@ func initADL() {
 	ADL_Main_Control_Create(adlMalloc, 1)
 }
 
-func destroyADL() {
+func DestroyADL() {
 	ADL_Main_Control_Destroy()
 }
 
-func start() {
+func Start() {
 	for {
-		reloadConfigIfChanged()
+		config.ReloadConfigIfChanged()
 
-		temp, rpm := readGPU()
-		if int(temp) > config.MaxFanOffTemp && rpm == 0 {
-			alert("GPU temperature > " + fmt.Sprintf("%v", config.MaxFanOffTemp) + "°C and fan is not spinning")
-		} else if int(temp) > config.MaxTemp {
-			alert("GPU temperature > " + fmt.Sprintf("%v", config.MaxTemp) + "°C")
+		temp, rpm := ReadGPU()
+		if int(temp) > config.Config.MaxFanOffTemp && rpm == 0 {
+			Alert("GPU temperature > " + fmt.Sprintf("%v", config.Config.MaxFanOffTemp) + "°C and fan is not spinning")
+		} else if int(temp) > config.Config.MaxTemp {
+			Alert("GPU temperature > " + fmt.Sprintf("%v", config.Config.MaxTemp) + "°C")
 		}
 
 		time.Sleep(10 * time.Second)

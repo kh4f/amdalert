@@ -3,22 +3,24 @@ package main
 import (
 	"bufio"; "fmt"; "time"; "os"; "strconv"; "os/exec"; "strings"; "syscall";
 	w "golang.org/x/sys/windows"
+	"hotamd/internal/config";
+	"hotamd/internal/monitor"
 )
 
-var eventPtr = utf16("Global\\HotAMD")
+var eventPtr = monitor.Utf16("Global\\HotAMD")
 
 func main() {
-	initADL()
-	loadConfig()
+	monitor.InitADL()
+	config.LoadConfig()
 	if len(os.Args) > 1 && os.Args[1] == "--daemon" { runDaemon() } else { runCLI() }
-	destroyADL()
+	monitor.DestroyADL()
 }
 
 func runDaemon() {
 	handle, err := w.CreateEvent(nil, 1, 0, eventPtr)
 	if err != nil { return }
 	defer w.CloseHandle(handle)
-	go start()
+	go monitor.Start()
 	w.WaitForSingleObject(handle, w.INFINITE)
 }
 
@@ -32,11 +34,11 @@ func runCLI() {
 
         fmt.Println("♨️ HotAMD")
 
-		temp, fan := readGPU()
+		temp, fan := monitor.ReadGPU()
 		fmt.Printf("\nGPU: %v°C / %v RPM\n", temp, fan)
 
-		fmt.Printf("Max temperature: %v°C\n", config.MaxTemp)
-		fmt.Printf("Max fan-off temperature: %v°C\n", config.MaxFanOffTemp)
+		fmt.Printf("Max temperature: %v°C\n", config.Config.MaxTemp)
+		fmt.Printf("Max fan-off temperature: %v°C\n", config.Config.MaxFanOffTemp)
 
 		fmt.Print("Alerts: ")
 		isRunning := isRunning()
@@ -67,8 +69,8 @@ func runCLI() {
 				if err != nil {
 					fmt.Println("Invalid input")
 				} else {
-					config.MaxTemp = val
-					saveConfig()
+					config.Config.MaxTemp = val
+					config.SaveConfig()
 				}
 			case "3":
 				fmt.Print("Enter max fan-off temperature (°C): ")
@@ -78,8 +80,8 @@ func runCLI() {
 				if err != nil {
 					fmt.Println("Invalid input")
 				} else {
-					config.MaxFanOffTemp = val
-					saveConfig()
+					config.Config.MaxFanOffTemp = val
+					config.SaveConfig()
 				}
 			case "4": return
         }
