@@ -1,13 +1,14 @@
 package main
 
 import (
-	"bufio"; "fmt"; "time"; "os"; "strconv"; "os/exec"; "strings"; "syscall";
-	w "golang.org/x/sys/windows"
-	"hotamd/internal/config";
+	"bufio"; "fmt"; "time"; "os"; "strconv"; "os/exec"; "strings"; "syscall"
+	"golang.org/x/sys/windows"
+	"hotamd/internal/config"
 	"hotamd/internal/monitor"
+	"hotamd/internal/win"
 )
 
-var eventPtr = monitor.Utf16("Global\\HotAMD")
+var eventPtr = win.Utf16("Global\\HotAMD")
 
 func main() {
 	monitor.InitADL()
@@ -17,11 +18,11 @@ func main() {
 }
 
 func runDaemon() {
-	handle, err := w.CreateEvent(nil, 1, 0, eventPtr)
+	handle, err := windows.CreateEvent(nil, 1, 0, eventPtr)
 	if err != nil { return }
-	defer w.CloseHandle(handle)
+	defer windows.CloseHandle(handle)
 	go monitor.Start()
-	w.WaitForSingleObject(handle, w.INFINITE)
+	windows.WaitForSingleObject(handle, windows.INFINITE)
 }
 
 func runCLI() {
@@ -89,9 +90,9 @@ func runCLI() {
 }
 
 func isRunning() bool {
-	handle, err := w.OpenEvent(w.SYNCHRONIZE, false, eventPtr)
+	handle, err := windows.OpenEvent(windows.SYNCHRONIZE, false, eventPtr)
 	if err != nil { return false }
-	w.CloseHandle(handle)
+	windows.CloseHandle(handle)
 	return true
 }
 
@@ -105,9 +106,9 @@ func startDaemon() {
 }
 
 func stopDaemon() {
-	handle, err := w.OpenEvent(w.EVENT_MODIFY_STATE, false, eventPtr)
+	handle, err := windows.OpenEvent(windows.EVENT_MODIFY_STATE, false, eventPtr)
 	if err != nil { return }
 	fmt.Println("Stopping daemon...")
-	defer w.CloseHandle(handle)
-	w.SetEvent(handle)
+	defer windows.CloseHandle(handle)
+	windows.SetEvent(handle)
 }
