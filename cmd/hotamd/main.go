@@ -8,7 +8,10 @@ import (
 	"hotamd/internal/win"
 )
 
-var eventPtr = win.Utf16("Global\\HotAMD")
+var (
+	version = "0.3.0"
+	eventPtr = win.Utf16("Global\\HotAMD")
+)
 
 func main() {
 	monitor.InitADL()
@@ -33,7 +36,7 @@ func runCLI() {
 		cmd.Stdout = os.Stdout
 		cmd.Run()
 
-        fmt.Println("♨️ HotAMD")
+        fmt.Println("♨️ HotAMD v" + version)
 
 		temp, fan := monitor.ReadGPU()
 		fmt.Printf("\nGPU: %v°C / %v RPM\n", temp, fan)
