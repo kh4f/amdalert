@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/exec"
 	"slices"
-	"strings"
 )
 
 func main() {
@@ -14,15 +13,16 @@ func main() {
 
 	switch {
 	case slices.Contains(os.Args, "--build"):
-		cmd = "go build -o HotAMD.exe ./cmd/hotamd"
+		cmd = "cd cmd/hotamd && " +
+			"windres res.rc -O coff -o res.syso && " +
+			"go build -o HotAMD.exe ./cmd/hotamd"
 	case slices.Contains(os.Args, "--run"):
 		cmd = "go run ./cmd/hotamd"
 	case slices.Contains(os.Args, "--release"):
 		cmd = "bunx relion -b internal/cli/cli.go"
 	}
 
-	args := strings.Fields(cmd)
-	execCmd := exec.Command(args[0], args[1:]...)
+	execCmd := exec.Command("cmd", "/C", cmd)
 	execCmd.Stdout, execCmd.Stderr, execCmd.Stdin = os.Stdout, os.Stderr, os.Stdin
 	execCmd.Run()
 }
