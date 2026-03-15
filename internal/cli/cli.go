@@ -56,6 +56,12 @@ func Run() {
 				config.Save()
 			}
 		case "4":
+			if daemon.IsInStartup() {
+				daemon.RemoveFromStartup()
+			} else {
+				daemon.AddToStartup()
+			}
+		case "5":
 			return
 		}
 	}
@@ -71,6 +77,13 @@ func printMenu() {
 		alertsAction = "Disable alerts"
 	}
 
+	autostartStatus := "off"
+	autostartAction := "Add to startup"
+	if daemon.IsInStartup() {
+		autostartStatus = "on"
+		autostartAction = "Remove from startup"
+	}
+
 	fmt.Printf(`♨️ HotAMD v%s
 
 Status
@@ -79,12 +92,14 @@ Status
   Alerts:         %s
   Alert temp:     %d°C
   Fan-off alert:  %d°C
+  Autostart:      %s
 
 Actions
   1) %s
   2) Set alert temp
   3) Set fan-off alert temp
-  4) Exit
+  4) %s
+  5) Exit
 
 > `,
 		version,
@@ -93,7 +108,9 @@ Actions
 		alertsStatus,
 		config.Config.MaxTemp,
 		config.Config.MaxFanOffTemp,
+		autostartStatus,
 		alertsAction,
+		autostartAction,
 	)
 }
 

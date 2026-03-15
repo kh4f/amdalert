@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"golang.org/x/sys/windows"
+	"golang.org/x/sys/windows/registry"
 )
 
 var eventPtr = win.Utf16("Global\\HotAMD")
@@ -68,4 +69,52 @@ func monitorGPU() {
 
 		time.Sleep(10 * time.Second)
 	}
+}
+
+func AddToStartup() {
+	exePath, err := os.Executable()
+	if err != nil {
+		return
+	}
+
+	key, _, err := registry.CreateKey(
+		registry.CURRENT_USER,
+		`Software\Microsoft\Windows\CurrentVersion\Run`,
+		registry.SET_VALUE,
+	)
+	if err != nil {
+		return
+	}
+	defer key.Close()
+
+	key.SetStringValue("HotAMD", exePath+" --daemon")
+}
+
+func RemoveFromStartup() {
+	key, err := registry.OpenKey(
+		registry.CURRENT_USER,
+		`Software\Microsoft\Windows\CurrentVersion\Run`,
+		registry.SET_VALUE,
+	)
+	if err != nil {
+		return
+	}
+	defer key.Close()
+
+	key.DeleteValue("HotAMD")
+}
+
+func IsInStartup() bool {
+	key, err := registry.OpenKey(
+		registry.CURRENT_USER,
+		`Software\Microsoft\Windows\CurrentVersion\Run`,
+		registry.QUERY_VALUE,
+	)
+	if err != nil {
+		return false
+	}
+	defer key.Close()
+
+	_, _, err = key.GetStringValue("HotAMD")
+	return err == nil
 }
