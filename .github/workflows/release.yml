@@ -25,7 +25,7 @@ jobs:
         run: echo -e ZIP=${GITHUB_REPOSITORY#*/}-$TAG.zip >> $GITHUB_ENV
 
       - name: Build
-        run: GOOS=windows go run build.go --build
+        run: go run build.go --build
 
       - name: Create release archive
         run: zip $ZIP HotAMD.exe

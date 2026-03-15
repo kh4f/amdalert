@@ -24,5 +24,6 @@ func main() {
 
 	execCmd := exec.Command("bash", "-c", cmd)
 	execCmd.Stdout, execCmd.Stderr, execCmd.Stdin = os.Stdout, os.Stderr, os.Stdin
+	execCmd.Env = append(os.Environ(), "GOOS=windows")
 	execCmd.Run()
 }
