@@ -16,6 +16,10 @@ jobs:
         uses: actions/setup-go@v6
         with: { go-version: 1.26.0 }
 
+      - name: Install MSYS2
+        uses: msys2/setup-msys2@v2
+        with: { install: mingw-w64-x86_64-binutils }
+
       - name: Set env variables
         shell: bash
         run: echo -e ZIP=${GITHUB_REPOSITORY#*/}-$TAG.zip >> $GITHUB_ENV
