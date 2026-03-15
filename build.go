@@ -15,7 +15,7 @@ func main() {
 	case slices.Contains(os.Args, "--build"):
 		cmd = "cd cmd/hotamd && " +
 			"windres res.rc -O coff -o res.syso && " +
-			"go build -o HotAMD.exe ."
+			"go build -o ../../HotAMD.exe ."
 	case slices.Contains(os.Args, "--run"):
 		cmd = "go run ./cmd/hotamd"
 	case slices.Contains(os.Args, "--release"):
