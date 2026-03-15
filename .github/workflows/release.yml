@@ -28,7 +28,7 @@ jobs:
         run: go run build.go --build
 
       - name: Create release archive
-        run: zip $ZIP HotAMD.exe
+        run: zip $ZIP AMDAlert.exe
 
       - name: Create GitHub release
         env:

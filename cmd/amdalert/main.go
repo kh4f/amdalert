@@ -1,10 +1,10 @@
 package main
 
 import (
-	"hotamd/internal/adl"
-	"hotamd/internal/cli"
-	"hotamd/internal/config"
-	"hotamd/internal/daemon"
+	"amdalert/internal/adl"
+	"amdalert/internal/cli"
+	"amdalert/internal/config"
+	"amdalert/internal/daemon"
 	"os"
 )
 

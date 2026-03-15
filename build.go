@@ -13,11 +13,11 @@ func main() {
 
 	switch {
 	case slices.Contains(os.Args, "--build"):
-		cmd = "cd cmd/hotamd && " +
+		cmd = "cd cmd/amdalert && " +
 			"windres res.rc -O coff -o res.syso && " +
-			"go build -o ../../HotAMD.exe ."
+			"go build -o ../../AMDAlert.exe ."
 	case slices.Contains(os.Args, "--run"):
-		cmd = "go run ./cmd/hotamd"
+		cmd = "go run ./cmd/amdalert"
 	case slices.Contains(os.Args, "--release"):
 		cmd = "bunx relion -b internal/cli/cli.go"
 	}

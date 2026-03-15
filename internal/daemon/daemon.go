@@ -2,9 +2,9 @@ package daemon
 
 import (
 	"fmt"
-	"hotamd/internal/adl"
-	"hotamd/internal/config"
-	"hotamd/internal/win"
+	"amdalert/internal/adl"
+	"amdalert/internal/config"
+	"amdalert/internal/win"
 	"os"
 	"os/exec"
 	"syscall"
@@ -14,7 +14,7 @@ import (
 	"golang.org/x/sys/windows/registry"
 )
 
-var eventPtr = win.Utf16("Global\\HotAMD")
+var eventPtr = win.Utf16("Global\\AMDAlert")
 
 func Run() {
 	handle, err := windows.CreateEvent(nil, 1, 0, eventPtr)
@@ -87,7 +87,7 @@ func AddToStartup() {
 	}
 	defer key.Close()
 
-	key.SetStringValue("HotAMD", exePath+" --daemon")
+	key.SetStringValue("AMDAlert", exePath+" --daemon")
 }
 
 func RemoveFromStartup() {
@@ -101,7 +101,7 @@ func RemoveFromStartup() {
 	}
 	defer key.Close()
 
-	key.DeleteValue("HotAMD")
+	key.DeleteValue("AMDAlert")
 }
 
 func IsInStartup() bool {
@@ -115,6 +115,6 @@ func IsInStartup() bool {
 	}
 	defer key.Close()
 
-	_, _, err = key.GetStringValue("HotAMD")
+	_, _, err = key.GetStringValue("AMDAlert")
 	return err == nil
 }

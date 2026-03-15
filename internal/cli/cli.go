@@ -3,9 +3,9 @@ package cli
 import (
 	"bufio"
 	"fmt"
-	"hotamd/internal/adl"
-	"hotamd/internal/config"
-	"hotamd/internal/daemon"
+	"amdalert/internal/adl"
+	"amdalert/internal/config"
+	"amdalert/internal/daemon"
 	"os"
 	"os/exec"
 	"strconv"
@@ -84,7 +84,7 @@ func printMenu() {
 		autostartAction = "Remove from startup"
 	}
 
-	fmt.Printf(`♨️ HotAMD v%s
+	fmt.Printf(`🚨 AMDAlert v%s
 
 Status
   GPU temp:       %d°C

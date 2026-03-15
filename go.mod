@@ -1,4 +1,4 @@
-module hotamd
+module amdalert
 
 go 1.26.0
 
