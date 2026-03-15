@@ -17,46 +17,18 @@ const version = "0.3.0"
 
 func Run() {
 	reader := bufio.NewReader(os.Stdin)
+	isDaemonRunning := daemon.IsRunning()
 
 	for {
 		clearConsole()
-
-		fmt.Println("♨️ HotAMD v" + version)
-
-		temp, fan := adl.ReadGPU()
-		fmt.Printf("\nGPU: %v°C / %v RPM\n", temp, fan)
-
-		fmt.Printf("Max temperature: %v°C\n", config.Config.MaxTemp)
-		fmt.Printf("Max fan-off temperature: %v°C\n", config.Config.MaxFanOffTemp)
-
-		fmt.Print("Alerts: ")
-		isRunning := daemon.IsRunning()
-		if isRunning {
-			fmt.Println("on")
-		} else {
-			fmt.Println("off")
-		}
-
-		fmt.Print("\n1) ")
-		if isRunning {
-			fmt.Print("Disable ")
-		} else {
-			fmt.Print("Enable ")
-		}
-		fmt.Println("alerts")
-
-		fmt.Println("2) Set max temp")
-		fmt.Println("3) Set max fan-off temp")
-		fmt.Println("4) Exit")
-
-		fmt.Print("\n> ")
+		printMenu(isDaemonRunning)
 
 		input, _ := reader.ReadString('\n')
 		input = strings.TrimSpace(input)
 
 		switch input {
 		case "1":
-			if isRunning {
+			if isDaemonRunning {
 				daemon.Stop()
 			} else {
 				daemon.Start()
@@ -88,6 +60,37 @@ func Run() {
 			return
 		}
 	}
+}
+
+func printMenu(isDaemonRunning bool) {
+	fmt.Println("♨️ HotAMD v" + version)
+
+	temp, fan := adl.ReadGPU()
+	fmt.Printf("\nGPU: %v°C / %v RPM\n", temp, fan)
+
+	fmt.Printf("Max temperature: %v°C\n", config.Config.MaxTemp)
+	fmt.Printf("Max fan-off temperature: %v°C\n", config.Config.MaxFanOffTemp)
+
+	fmt.Print("Alerts: ")
+	if isDaemonRunning {
+		fmt.Println("on")
+	} else {
+		fmt.Println("off")
+	}
+
+	fmt.Print("\n1) ")
+	if isDaemonRunning {
+		fmt.Print("Disable ")
+	} else {
+		fmt.Print("Enable ")
+	}
+	fmt.Println("alerts")
+
+	fmt.Println("2) Set max temp")
+	fmt.Println("3) Set max fan-off temp")
+	fmt.Println("4) Exit")
+
+	fmt.Print("\n> ")
 }
 
 func clearConsole() {
