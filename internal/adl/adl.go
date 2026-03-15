@@ -1,29 +1,29 @@
 package adl
 
 import (
-	"unsafe"
 	"golang.org/x/sys/windows"
+	"unsafe"
 )
 
 type ADLTemperature struct {
-	Size int32
+	Size        int32
 	Temperature int32
 }
 
 type ADLFanSpeedValue struct {
-	Size  int32
+	Size      int32
 	SpeedType int32
-	FanSpeed int32
-	Flags int32
+	FanSpeed  int32
+	Flags     int32
 }
 
 var (
-	dll = windows.NewLazySystemDLL("atiadlxx.dll")
-	ADL_Main_Control_Create = dll.NewProc("ADL_Main_Control_Create").Call
-	ADL_Main_Control_Destroy = dll.NewProc("ADL_Main_Control_Destroy").Call
+	dll                              = windows.NewLazySystemDLL("atiadlxx.dll")
+	ADL_Main_Control_Create          = dll.NewProc("ADL_Main_Control_Create").Call
+	ADL_Main_Control_Destroy         = dll.NewProc("ADL_Main_Control_Destroy").Call
 	ADL_Adapter_NumberOfAdapters_Get = dll.NewProc("ADL_Adapter_NumberOfAdapters_Get").Call
-	ADL_Overdrive5_Temperature_Get = dll.NewProc("ADL_Overdrive5_Temperature_Get").Call
-	ADL_Overdrive5_FanSpeed_Get = dll.NewProc("ADL_Overdrive5_FanSpeed_Get").Call
+	ADL_Overdrive5_Temperature_Get   = dll.NewProc("ADL_Overdrive5_Temperature_Get").Call
+	ADL_Overdrive5_FanSpeed_Get      = dll.NewProc("ADL_Overdrive5_FanSpeed_Get").Call
 )
 
 func ReadGPU() (temperature int32, fan int32) {

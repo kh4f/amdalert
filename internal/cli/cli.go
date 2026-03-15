@@ -1,21 +1,27 @@
 package cli
 
 import (
-	"bufio"; "fmt"; "os"; "strconv"; "strings"; "time"; "os/exec"
-	"hotamd/internal/config"
+	"bufio"
+	"fmt"
 	"hotamd/internal/adl"
+	"hotamd/internal/config"
 	"hotamd/internal/daemon"
+	"os"
+	"os/exec"
+	"strconv"
+	"strings"
+	"time"
 )
 
 const version = "0.3.0"
 
 func Run() {
-    reader := bufio.NewReader(os.Stdin)
+	reader := bufio.NewReader(os.Stdin)
 
-    for {
+	for {
 		clearConsole()
 
-        fmt.Println("♨️ HotAMD v" + version)
+		fmt.Println("♨️ HotAMD v" + version)
 
 		temp, fan := adl.ReadGPU()
 		fmt.Printf("\nGPU: %v°C / %v RPM\n", temp, fan)
@@ -25,24 +31,36 @@ func Run() {
 
 		fmt.Print("Alerts: ")
 		isRunning := daemon.IsRunning()
-        if isRunning { fmt.Println("on") } else { fmt.Println("off") }
+		if isRunning {
+			fmt.Println("on")
+		} else {
+			fmt.Println("off")
+		}
 
 		fmt.Print("\n1) ")
-		if isRunning { fmt.Print("Disable ") } else { fmt.Print("Enable ") }
+		if isRunning {
+			fmt.Print("Disable ")
+		} else {
+			fmt.Print("Enable ")
+		}
 		fmt.Println("alerts")
 
 		fmt.Println("2) Set max temp")
 		fmt.Println("3) Set max fan-off temp")
 		fmt.Println("4) Exit")
 
-        fmt.Print("\n> ")
+		fmt.Print("\n> ")
 
-        input, _ := reader.ReadString('\n')
-        input = strings.TrimSpace(input)
+		input, _ := reader.ReadString('\n')
+		input = strings.TrimSpace(input)
 
-        switch input {
+		switch input {
 		case "1":
-			if isRunning { daemon.Stop() } else { daemon.Start() }
+			if isRunning {
+				daemon.Stop()
+			} else {
+				daemon.Start()
+			}
 			time.Sleep(300 * time.Millisecond)
 		case "2":
 			fmt.Print("Enter max temperature (°C): ")
@@ -66,9 +84,10 @@ func Run() {
 				config.Config.MaxFanOffTemp = val
 				config.SaveConfig()
 			}
-		case "4": return
-        }
-    }
+		case "4":
+			return
+		}
+	}
 }
 
 func clearConsole() {

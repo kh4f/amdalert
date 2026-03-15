@@ -2,22 +2,27 @@
 
 package main
 
-import ("slices"; "os"; "os/exec"; "strings")
+import (
+	"os"
+	"os/exec"
+	"slices"
+	"strings"
+)
 
 func main() {
-    var cmd string
+	var cmd string
 
-    switch {
+	switch {
 	case slices.Contains(os.Args, "--build"):
 		cmd = "go build -o HotAMD.exe ./cmd/hotamd"
 	case slices.Contains(os.Args, "--run"):
 		cmd = "go run ./cmd/hotamd"
 	case slices.Contains(os.Args, "--release"):
 		cmd = "bunx relion -b internal/cli/cli.go"
-    }
+	}
 
-    args := strings.Fields(cmd)
-    execCmd := exec.Command(args[0], args[1:]...)
-    execCmd.Stdout, execCmd.Stderr, execCmd.Stdin = os.Stdout, os.Stderr, os.Stdin
-    execCmd.Run()
+	args := strings.Fields(cmd)
+	execCmd := exec.Command(args[0], args[1:]...)
+	execCmd.Stdout, execCmd.Stderr, execCmd.Stdin = os.Stdout, os.Stderr, os.Stdin
+	execCmd.Run()
 }

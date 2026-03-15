@@ -1,11 +1,11 @@
 package main
 
 import (
-	"os"
-	"hotamd/internal/config"
 	"hotamd/internal/adl"
 	"hotamd/internal/cli"
+	"hotamd/internal/config"
 	"hotamd/internal/daemon"
+	"os"
 )
 
 func main() {

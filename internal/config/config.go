@@ -1,18 +1,22 @@
 package config
 
-import ("os"; "encoding/json")
+import (
+	"encoding/json"
+	"os"
+)
 
 type ConfigT struct {
-	MaxTemp int `json:"maxTemp"`
+	MaxTemp       int `json:"maxTemp"`
 	MaxFanOffTemp int `json:"maxFanOffTemp"`
 }
 
 var Config = ConfigT{
-	MaxTemp: 60,
+	MaxTemp:       60,
 	MaxFanOffTemp: 40,
 }
 
 const configFile = "config.json"
+
 var configModTime int64
 
 func LoadConfig() {
@@ -24,7 +28,9 @@ func LoadConfig() {
 	json.Unmarshal(data, &Config)
 
 	info, err := os.Stat(configFile)
-	if err != nil { return }
+	if err != nil {
+		return
+	}
 	configModTime = info.ModTime().Unix()
 }
 
@@ -40,7 +46,9 @@ func SaveConfig() {
 
 func ReloadConfigIfChanged() {
 	info, err := os.Stat(configFile)
-	if err != nil { return }
+	if err != nil {
+		return
+	}
 
 	if info.ModTime().Unix() != configModTime {
 		LoadConfig()
