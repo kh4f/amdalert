@@ -13,7 +13,7 @@ func main() {
 	case slices.Contains(os.Args, "--run"):
 		cmd = "go run ./cmd/hotamd"
 	case slices.Contains(os.Args, "--release"):
-		cmd = "bunx relion -b cmd/hotamd/main.go"
+		cmd = "bunx relion -b internal/cli/cli.go"
     }
 
     args := strings.Fields(cmd)
