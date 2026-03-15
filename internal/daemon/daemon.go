@@ -3,7 +3,7 @@ package daemon
 import (
 	"fmt"; "os"; "os/exec"; "syscall"
 	"golang.org/x/sys/windows"
-	"hotamd/internal/monitor"
+	"hotamd/internal/adl"
 	"hotamd/internal/win"
 )
 
@@ -13,7 +13,7 @@ func Run() {
 	handle, err := windows.CreateEvent(nil, 1, 0, eventPtr)
 	if err != nil { return }
 	defer windows.CloseHandle(handle)
-	go monitor.Start()
+	go adl.Start()
 	windows.WaitForSingleObject(handle, windows.INFINITE)
 }
 

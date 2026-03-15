@@ -3,7 +3,7 @@ package cli
 import (
 	"bufio"; "fmt"; "os"; "strconv"; "strings"; "time"; "os/exec"
 	"hotamd/internal/config"
-	"hotamd/internal/monitor"
+	"hotamd/internal/adl"
 	"hotamd/internal/daemon"
 )
 
@@ -17,7 +17,7 @@ func Run() {
 
         fmt.Println("♨️ HotAMD v" + version)
 
-		temp, fan := monitor.ReadGPU()
+		temp, fan := adl.ReadGPU()
 		fmt.Printf("\nGPU: %v°C / %v RPM\n", temp, fan)
 
 		fmt.Printf("Max temperature: %v°C\n", config.Config.MaxTemp)

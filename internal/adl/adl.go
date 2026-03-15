@@ -1,4 +1,4 @@
-package monitor
+package adl
 
 import (
 	"fmt"; "unsafe"; "time"
@@ -38,7 +38,7 @@ func ReadGPU() (temperature int32, fan int32) {
 	return temp.Temperature / 1000, fanSpeed.FanSpeed
 }
 
-func InitADL() {
+func Init() {
 	adlMalloc := windows.NewCallback(func(size int32) uintptr {
 		ptr, _ := windows.LocalAlloc(0, uint32(size))
 		return uintptr(ptr)
@@ -46,7 +46,7 @@ func InitADL() {
 	ADL_Main_Control_Create(adlMalloc, 1)
 }
 
-func DestroyADL() {
+func Destroy() {
 	ADL_Main_Control_Destroy()
 }
 
