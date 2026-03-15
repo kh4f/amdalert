@@ -32,9 +32,7 @@ func runCLI() {
     reader := bufio.NewReader(os.Stdin)
 
     for {
-		cmd := exec.Command("cmd", "/c", "cls")
-		cmd.Stdout = os.Stdout
-		cmd.Run()
+		clearConsole()
 
         fmt.Println("♨️ HotAMD v" + version)
 
@@ -90,6 +88,12 @@ func runCLI() {
 			case "4": return
         }
     }
+}
+
+func clearConsole() {
+	cmd := exec.Command("cmd", "/c", "cls")
+	cmd.Stdout = os.Stdout
+	cmd.Run()
 }
 
 func isRunning() bool {
