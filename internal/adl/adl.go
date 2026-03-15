@@ -1,10 +1,8 @@
 package adl
 
 import (
-	"fmt"; "unsafe"; "time"
+	"unsafe"
 	"golang.org/x/sys/windows"
-	"hotamd/internal/config"
-	"hotamd/internal/win"
 )
 
 type ADLTemperature struct {
@@ -48,19 +46,4 @@ func Init() {
 
 func Destroy() {
 	ADL_Main_Control_Destroy()
-}
-
-func Start() {
-	for {
-		config.ReloadConfigIfChanged()
-
-		temp, rpm := ReadGPU()
-		if int(temp) > config.Config.MaxFanOffTemp && rpm == 0 {
-			win.Alert("GPU temperature > " + fmt.Sprintf("%v", config.Config.MaxFanOffTemp) + "°C and fan is not spinning")
-		} else if int(temp) > config.Config.MaxTemp {
-			win.Alert("GPU temperature > " + fmt.Sprintf("%v", config.Config.MaxTemp) + "°C")
-		}
-
-		time.Sleep(10 * time.Second)
-	}
 }
