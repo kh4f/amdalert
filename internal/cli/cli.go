@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-const version = "0.3.0"
+const version = "1.0.0"
 
 func Run() {
 	reader := bufio.NewReader(os.Stdin)

@@ -1,6 +1,22 @@
 # Changelog
 
 
+## &ensp; [` 📦 v1.0.0  `](https://github.com/kh4f/amdalert/compare/v0.3.0...v1.0.0)
+
+### &emsp; 🧨 BREAKING CHANGES
+- **Project renamed to `AMDAlert`**: all code, modules, binaries, registry keys, and documentation now use the `AMDAlert` name instead of `HotAMD`. [🡥](https://github.com/kh4f/amdalert/commit/05c825d)
+
+### &emsp; 🎁 Features
+- **Windows autostart support**: the app can now be added to or removed from Windows startup via the CLI. [🡥](https://github.com/kh4f/amdalert/commit/3bce049)
+- **Application icon**: a custom `icon.ico` is now embedded in the Windows executable. [🡥](https://github.com/kh4f/amdalert/commit/3413dac)
+
+### &emsp; 🎨 Style
+- **Improved CLI layout**: the CLI output is now more readable, with grouped status and actions, and clearer alert information. [🡥](https://github.com/kh4f/amdalert/commit/8f00e7f)
+- **Version info in CLI banner**: the CLI header now displays the current version for better traceability. [🡥](https://github.com/kh4f/amdalert/commit/407175f)
+
+##### &emsp;&emsp; [Full Changelog](https://github.com/kh4f/amdalert/compare/v0.3.0...v1.0.0) &ensp;•&ensp; Mar 16, 2026
+
+
 ## &ensp; [` 📦 v0.3.0  `](https://github.com/kh4f/amdalert/compare/v0.2.0...v0.3.0)
 
 ### &emsp; 🎁 Features
