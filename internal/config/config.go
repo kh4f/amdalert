@@ -19,10 +19,10 @@ const configFile = "config.json"
 
 var configModTime int64
 
-func LoadConfig() {
+func Load() {
 	data, err := os.ReadFile(configFile)
 	if err != nil {
-		SaveConfig()
+		Save()
 		return
 	}
 	json.Unmarshal(data, &Config)
@@ -34,7 +34,7 @@ func LoadConfig() {
 	configModTime = info.ModTime().Unix()
 }
 
-func SaveConfig() {
+func Save() {
 	data, _ := json.MarshalIndent(Config, "", "  ")
 	os.WriteFile(configFile, data, 0644)
 
@@ -44,13 +44,13 @@ func SaveConfig() {
 	}
 }
 
-func ReloadConfigIfChanged() {
+func ReloadIfChanged() {
 	info, err := os.Stat(configFile)
 	if err != nil {
 		return
 	}
 
 	if info.ModTime().Unix() != configModTime {
-		LoadConfig()
+		Load()
 	}
 }

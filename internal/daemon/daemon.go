@@ -57,7 +57,7 @@ func Stop() {
 
 func monitorGPU() {
 	for {
-		config.ReloadConfigIfChanged()
+		config.ReloadIfChanged()
 
 		temp, rpm := adl.ReadGPU()
 		if int(temp) > config.Config.MaxFanOffTemp && rpm == 0 {

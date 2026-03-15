@@ -42,7 +42,7 @@ func Run() {
 				fmt.Println("Invalid input")
 			} else {
 				config.Config.MaxTemp = val
-				config.SaveConfig()
+				config.Save()
 			}
 		case "3":
 			fmt.Print("Enter max fan-off temperature (°C): ")
@@ -53,7 +53,7 @@ func Run() {
 				fmt.Println("Invalid input")
 			} else {
 				config.Config.MaxFanOffTemp = val
-				config.SaveConfig()
+				config.Save()
 			}
 		case "4":
 			return

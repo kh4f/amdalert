@@ -10,7 +10,7 @@ import (
 
 func main() {
 	adl.Init()
-	config.LoadConfig()
+	config.Load()
 	if len(os.Args) > 1 && os.Args[1] == "--daemon" {
 		daemon.Run()
 	} else {
