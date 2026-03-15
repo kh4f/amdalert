@@ -22,7 +22,7 @@ func main() {
 		cmd = "bunx relion -b internal/cli/cli.go"
 	}
 
-	execCmd := exec.Command("cmd", "/C", cmd)
+	execCmd := exec.Command("bash", "-c", cmd)
 	execCmd.Stdout, execCmd.Stderr, execCmd.Stdin = os.Stdout, os.Stderr, os.Stdin
 	execCmd.Run()
 }
