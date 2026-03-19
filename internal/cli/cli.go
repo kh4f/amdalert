@@ -1,11 +1,11 @@
 package cli
 
 import (
-	"bufio"
-	"fmt"
 	"amdalert/internal/adl"
 	"amdalert/internal/config"
 	"amdalert/internal/daemon"
+	"bufio"
+	"fmt"
 	"os"
 	"os/exec"
 	"strconv"
@@ -15,51 +15,51 @@ import (
 
 const version = "1.0.0"
 
-func Run() {
+type UI struct {
+	gpu     adl.Reader
+	config  *config.Store
+	service *daemon.Service
+}
+
+func NewUI(gpu adl.Reader, store *config.Store, service *daemon.Service) *UI {
+	return &UI{
+		gpu:     gpu,
+		config:  store,
+		service: service,
+	}
+}
+
+func (ui *UI) Run() {
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
 		clearConsole()
-		printMenu()
+		ui.printMenu()
 
 		input, _ := reader.ReadString('\n')
 		input = strings.TrimSpace(input)
 
 		switch input {
 		case "1":
-			if daemon.IsRunning() {
-				daemon.Stop()
+			if ui.service.IsRunning() {
+				ui.service.Stop()
 			} else {
-				daemon.Start()
+				ui.service.Start()
 			}
 			time.Sleep(300 * time.Millisecond)
 		case "2":
-			fmt.Print("Enter max temperature (°C): ")
-			input, _ := reader.ReadString('\n')
-			input = strings.TrimSpace(input)
-			val, err := strconv.Atoi(input)
-			if err != nil {
-				fmt.Println("Invalid input")
-			} else {
-				config.Config.MaxTemp = val
-				config.Save()
-			}
+			ui.updateTemperature(reader, "Enter max temperature (°C): ", func(settings *config.Settings, value int) {
+				settings.MaxTemp = value
+			})
 		case "3":
-			fmt.Print("Enter max fan-off temperature (°C): ")
-			input, _ := reader.ReadString('\n')
-			input = strings.TrimSpace(input)
-			val, err := strconv.Atoi(input)
-			if err != nil {
-				fmt.Println("Invalid input")
-			} else {
-				config.Config.MaxFanOffTemp = val
-				config.Save()
-			}
+			ui.updateTemperature(reader, "Enter max fan-off temperature (°C): ", func(settings *config.Settings, value int) {
+				settings.MaxFanOffTemp = value
+			})
 		case "4":
-			if daemon.IsInStartup() {
-				daemon.RemoveFromStartup()
+			if ui.service.IsInStartup() {
+				ui.service.RemoveFromStartup()
 			} else {
-				daemon.AddToStartup()
+				ui.service.AddToStartup()
 			}
 		case "5":
 			return
@@ -67,24 +67,42 @@ func Run() {
 	}
 }
 
-func printMenu() {
-	temp, fan := adl.ReadGPU()
+func (ui *UI) updateTemperature(reader *bufio.Reader, prompt string, apply func(*config.Settings, int)) {
+	fmt.Print(prompt)
+
+	input, _ := reader.ReadString('\n')
+	input = strings.TrimSpace(input)
+
+	value, err := strconv.Atoi(input)
+	if err != nil {
+		fmt.Println("Invalid input")
+		return
+	}
+
+	settings := ui.config.Current()
+	apply(&settings, value)
+	_ = ui.config.Save(settings)
+}
+
+func (ui *UI) printMenu() {
+	temp, fan := ui.gpu.ReadGPU()
+	settings := ui.config.Current()
 
 	alertsStatus := "off"
 	alertsAction := "Enable alerts"
-	if daemon.IsRunning() {
+	if ui.service.IsRunning() {
 		alertsStatus = "on"
 		alertsAction = "Disable alerts"
 	}
 
 	autostartStatus := "off"
 	autostartAction := "Add to startup"
-	if daemon.IsInStartup() {
+	if ui.service.IsInStartup() {
 		autostartStatus = "on"
 		autostartAction = "Remove from startup"
 	}
 
-	fmt.Printf(`🚨 AMDAlert v%s
+	fmt.Printf(`AMDAlert v%s
 
 Status
   GPU temp:       %d°C
@@ -106,8 +124,8 @@ Actions
 		temp,
 		fan,
 		alertsStatus,
-		config.Config.MaxTemp,
-		config.Config.MaxFanOffTemp,
+		settings.MaxTemp,
+		settings.MaxFanOffTemp,
 		autostartStatus,
 		alertsAction,
 		autostartAction,

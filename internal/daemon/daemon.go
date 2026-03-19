@@ -1,10 +1,10 @@
 package daemon
 
 import (
-	"fmt"
 	"amdalert/internal/adl"
 	"amdalert/internal/config"
 	"amdalert/internal/win"
+	"fmt"
 	"os"
 	"os/exec"
 	"syscall"
@@ -14,20 +14,37 @@ import (
 	"golang.org/x/sys/windows/registry"
 )
 
-var eventPtr = win.Utf16("Global\\AMDAlert")
+const defaultEventName = "Global\\AMDAlert"
 
-func Run() {
-	handle, err := windows.CreateEvent(nil, 1, 0, eventPtr)
+type Service struct {
+	gpu       adl.Reader
+	notifier  win.Notifier
+	config    *config.Store
+	eventName *uint16
+}
+
+func NewService(gpu adl.Reader, notifier win.Notifier, store *config.Store) *Service {
+	return &Service{
+		gpu:       gpu,
+		notifier:  notifier,
+		config:    store,
+		eventName: win.EventName(defaultEventName),
+	}
+}
+
+func (s *Service) Run() {
+	handle, err := windows.CreateEvent(nil, 1, 0, s.eventName)
 	if err != nil {
 		return
 	}
 	defer windows.CloseHandle(handle)
-	go monitorGPU()
+
+	go s.monitorGPU()
 	windows.WaitForSingleObject(handle, windows.INFINITE)
 }
 
-func IsRunning() bool {
-	handle, err := windows.OpenEvent(windows.SYNCHRONIZE, false, eventPtr)
+func (s *Service) IsRunning() bool {
+	handle, err := windows.OpenEvent(windows.SYNCHRONIZE, false, s.eventName)
 	if err != nil {
 		return false
 	}
@@ -35,43 +52,34 @@ func IsRunning() bool {
 	return true
 }
 
-func Start() {
-	if IsRunning() {
+func (s *Service) Start() {
+	if s.IsRunning() {
 		return
 	}
+
 	fmt.Println("Starting daemon...")
-	exe, _ := os.Executable()
+	exe, err := os.Executable()
+	if err != nil {
+		return
+	}
+
 	cmd := exec.Command(exe, "--daemon")
 	cmd.SysProcAttr = &syscall.SysProcAttr{CreationFlags: 0x00000008}
 	cmd.Start()
 }
 
-func Stop() {
-	handle, err := windows.OpenEvent(windows.EVENT_MODIFY_STATE, false, eventPtr)
+func (s *Service) Stop() {
+	handle, err := windows.OpenEvent(windows.EVENT_MODIFY_STATE, false, s.eventName)
 	if err != nil {
 		return
 	}
 	defer windows.CloseHandle(handle)
+
 	fmt.Println("Stopping daemon...")
 	windows.SetEvent(handle)
 }
 
-func monitorGPU() {
-	for {
-		config.ReloadIfChanged()
-
-		temp, rpm := adl.ReadGPU()
-		if int(temp) > config.Config.MaxFanOffTemp && rpm == 0 {
-			win.Alert("GPU temperature > " + fmt.Sprintf("%v", config.Config.MaxFanOffTemp) + "°C and fan is not spinning")
-		} else if int(temp) > config.Config.MaxTemp {
-			win.Alert("GPU temperature > " + fmt.Sprintf("%v", config.Config.MaxTemp) + "°C")
-		}
-
-		time.Sleep(10 * time.Second)
-	}
-}
-
-func AddToStartup() {
+func (s *Service) AddToStartup() {
 	exePath, err := os.Executable()
 	if err != nil {
 		return
@@ -90,7 +98,7 @@ func AddToStartup() {
 	key.SetStringValue("AMDAlert", exePath+" --daemon")
 }
 
-func RemoveFromStartup() {
+func (s *Service) RemoveFromStartup() {
 	key, err := registry.OpenKey(
 		registry.CURRENT_USER,
 		`Software\Microsoft\Windows\CurrentVersion\Run`,
@@ -104,7 +112,7 @@ func RemoveFromStartup() {
 	key.DeleteValue("AMDAlert")
 }
 
-func IsInStartup() bool {
+func (s *Service) IsInStartup() bool {
 	key, err := registry.OpenKey(
 		registry.CURRENT_USER,
 		`Software\Microsoft\Windows\CurrentVersion\Run`,
@@ -117,4 +125,21 @@ func IsInStartup() bool {
 
 	_, _, err = key.GetStringValue("AMDAlert")
 	return err == nil
+}
+
+func (s *Service) monitorGPU() {
+	for {
+		_, _ = s.config.ReloadIfChanged()
+
+		settings := s.config.Current()
+		temp, rpm := s.gpu.ReadGPU()
+
+		if int(temp) > settings.MaxFanOffTemp && rpm == 0 {
+			s.notifier.Alert(fmt.Sprintf("GPU temperature > %d°C and fan is not spinning", settings.MaxFanOffTemp))
+		} else if int(temp) > settings.MaxTemp {
+			s.notifier.Alert(fmt.Sprintf("GPU temperature > %d°C", settings.MaxTemp))
+		}
+
+		time.Sleep(10 * time.Second)
+	}
 }

@@ -3,54 +3,91 @@ package config
 import (
 	"encoding/json"
 	"os"
+	"time"
 )
 
-type ConfigT struct {
+type Settings struct {
 	MaxTemp       int `json:"maxTemp"`
 	MaxFanOffTemp int `json:"maxFanOffTemp"`
 }
 
-var Config = ConfigT{
-	MaxTemp:       60,
-	MaxFanOffTemp: 40,
-}
-
-const configFile = "config.json"
-
-var configModTime int64
-
-func Load() {
-	data, err := os.ReadFile(configFile)
-	if err != nil {
-		Save()
-		return
-	}
-	json.Unmarshal(data, &Config)
-
-	info, err := os.Stat(configFile)
-	if err != nil {
-		return
-	}
-	configModTime = info.ModTime().Unix()
-}
-
-func Save() {
-	data, _ := json.MarshalIndent(Config, "", "  ")
-	os.WriteFile(configFile, data, 0644)
-
-	info, err := os.Stat(configFile)
-	if err == nil {
-		configModTime = info.ModTime().Unix()
+func DefaultSettings() Settings {
+	return Settings{
+		MaxTemp:       60,
+		MaxFanOffTemp: 40,
 	}
 }
 
-func ReloadIfChanged() {
-	info, err := os.Stat(configFile)
+type Store struct {
+	path    string
+	modTime time.Time
+	current Settings
+}
+
+func NewStore(path string) *Store {
+	return &Store{
+		path:    path,
+		current: DefaultSettings(),
+	}
+}
+
+func (s *Store) Load() error {
+	data, err := os.ReadFile(s.path)
 	if err != nil {
-		return
+		if os.IsNotExist(err) {
+			return s.Save(s.current)
+		}
+		return err
 	}
 
-	if info.ModTime().Unix() != configModTime {
-		Load()
+	settings := DefaultSettings()
+	if err := json.Unmarshal(data, &settings); err != nil {
+		return err
 	}
+
+	info, err := os.Stat(s.path)
+	if err != nil {
+		return err
+	}
+
+	s.current = settings
+	s.modTime = info.ModTime()
+	return nil
+}
+
+func (s *Store) Save(settings Settings) error {
+	data, err := json.MarshalIndent(settings, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	if err := os.WriteFile(s.path, data, 0o644); err != nil {
+		return err
+	}
+
+	info, err := os.Stat(s.path)
+	if err != nil {
+		return err
+	}
+
+	s.current = settings
+	s.modTime = info.ModTime()
+	return nil
+}
+
+func (s *Store) Current() Settings {
+	return s.current
+}
+
+func (s *Store) ReloadIfChanged() (bool, error) {
+	info, err := os.Stat(s.path)
+	if err != nil {
+		return false, err
+	}
+
+	if info.ModTime().Equal(s.modTime) {
+		return false, nil
+	}
+
+	return true, s.Load()
 }

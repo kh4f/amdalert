@@ -2,14 +2,24 @@ package win
 
 import "golang.org/x/sys/windows"
 
-func Alert(msg string) {
-	windows.MessageBox(0, Utf16(msg), Utf16("AMDAlert"), windows.MB_OK|windows.MB_ICONWARNING)
+type Notifier interface {
+	Alert(msg string)
 }
 
-func Utf16(s string) *uint16 {
+type MessageBoxNotifier struct{}
+
+func (MessageBoxNotifier) Alert(msg string) {
+	windows.MessageBox(0, utf16(msg), utf16("AMDAlert"), windows.MB_OK|windows.MB_ICONWARNING)
+}
+
+func utf16(s string) *uint16 {
 	ptr, err := windows.UTF16PtrFromString(s)
 	if err != nil {
 		panic(err)
 	}
 	return ptr
+}
+
+func EventName(name string) *uint16 {
+	return utf16(name)
 }
