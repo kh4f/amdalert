@@ -28,7 +28,7 @@ func NewService(gpu adl.Reader, notifier win.Notifier, store *config.Store) *Ser
 		gpu:       gpu,
 		notifier:  notifier,
 		config:    store,
-		eventName: win.EventName(defaultEventName),
+		eventName: windows.StringToUTF16Ptr(defaultEventName),
 	}
 }
 

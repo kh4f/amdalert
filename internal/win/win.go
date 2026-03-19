@@ -19,7 +19,3 @@ func utf16(s string) *uint16 {
 	}
 	return ptr
 }
-
-func EventName(name string) *uint16 {
-	return utf16(name)
-}
