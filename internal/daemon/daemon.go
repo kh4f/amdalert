@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"syscall"
 	"time"
 
@@ -15,6 +16,8 @@ import (
 )
 
 var eventName = windows.StringToUTF16Ptr("Global\\AMDAlert")
+
+const daemonFileName = "AMDAlertDaemon.exe"
 
 func Run() {
 	handle, err := windows.CreateEvent(nil, 1, 0, eventName)
@@ -42,12 +45,13 @@ func Start() {
 	}
 
 	fmt.Println("Starting daemon...")
-	exe, err := os.Executable()
+	exePath, err := os.Executable()
 	if err != nil {
 		return
 	}
 
-	cmd := exec.Command(exe, "--daemon")
+	daemonExe := filepath.Join(filepath.Dir(exePath), daemonFileName)
+	cmd := exec.Command(daemonExe)
 	cmd.SysProcAttr = &syscall.SysProcAttr{CreationFlags: 0x00000008}
 	cmd.Start()
 }
@@ -69,6 +73,8 @@ func AddToStartup() {
 		return
 	}
 
+	daemonExe := filepath.Join(filepath.Dir(exePath), daemonFileName)
+
 	key, _, err := registry.CreateKey(
 		registry.CURRENT_USER,
 		`Software\Microsoft\Windows\CurrentVersion\Run`,
@@ -79,7 +85,7 @@ func AddToStartup() {
 	}
 	defer key.Close()
 
-	key.SetStringValue("AMDAlert", exePath+" --daemon")
+	key.SetStringValue("AMDAlert", "\""+daemonExe+"\"")
 }
 
 func RemoveFromStartup() {
