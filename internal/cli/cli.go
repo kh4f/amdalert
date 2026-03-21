@@ -89,7 +89,7 @@ func printMenu() {
 		autostartAction = "Remove from startup"
 	}
 
-	fmt.Printf(`AMDAlert v%s
+	fmt.Printf(`🚨 AMDAlert v%s
 
 Status
   GPU temp:       %d°C
