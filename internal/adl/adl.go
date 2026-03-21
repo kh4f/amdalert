@@ -5,12 +5,6 @@ import (
 	"unsafe"
 )
 
-type Reader interface {
-	ReadGPU() (temperature int32, fan int32)
-}
-
-type Client struct{}
-
 type ADLTemperature struct {
 	Size        int32
 	Temperature int32
@@ -31,11 +25,7 @@ var (
 	ADL_Overdrive5_FanSpeed_Get    = dll.NewProc("ADL_Overdrive5_FanSpeed_Get").Call
 )
 
-func NewClient() *Client {
-	return &Client{}
-}
-
-func (c *Client) Init() {
+func Init() {
 	adlMalloc := windows.NewCallback(func(size int32) uintptr {
 		ptr, _ := windows.LocalAlloc(0, uint32(size))
 		return uintptr(ptr)
@@ -43,11 +33,11 @@ func (c *Client) Init() {
 	ADL_Main_Control_Create(adlMalloc, 1)
 }
 
-func (c *Client) Destroy() {
+func Destroy() {
 	ADL_Main_Control_Destroy()
 }
 
-func (c *Client) ReadGPU() (temperature int32, fan int32) {
+func ReadGPU() (temperature int32, fan int32) {
 	temp := ADLTemperature{Size: int32(unsafe.Sizeof(ADLTemperature{}))}
 	fanSpeed := ADLFanSpeedValue{Size: int32(unsafe.Sizeof(ADLFanSpeedValue{}))}
 

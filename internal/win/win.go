@@ -2,13 +2,7 @@ package win
 
 import "golang.org/x/sys/windows"
 
-type Notifier interface {
-	Alert(msg string)
-}
-
-type MessageBoxNotifier struct{}
-
-func (MessageBoxNotifier) Alert(msg string) {
+func Alert(msg string) {
 	windows.MessageBox(0, utf16(msg), utf16("AMDAlert"), windows.MB_OK|windows.MB_ICONWARNING)
 }
 

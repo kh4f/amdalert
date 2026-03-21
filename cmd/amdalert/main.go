@@ -1,10 +1,22 @@
 package main
 
 import (
-	"amdalert/internal/app"
+	"amdalert/internal/adl"
+	"amdalert/internal/cli"
+	"amdalert/internal/daemon"
+	"amdalert/internal/settings"
 	"os"
 )
 
 func main() {
-	app.New().Run(os.Args[1:])
+	adl.Init()
+	defer adl.Destroy()
+
+	settings.Load()
+
+	if len(os.Args) > 1 && os.Args[1] == "--daemon" {
+		daemon.Run()
+	} else {
+		cli.Run()
+	}
 }
