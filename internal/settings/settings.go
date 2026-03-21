@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-const filePath = "config.json"
+const filePath = "settings.json"
 
 type Settings struct {
 	MaxTemp       int `json:"maxTemp"`
