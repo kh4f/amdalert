@@ -22,7 +22,7 @@ jobs:
             sudo ln -s /usr/bin/x86_64-w64-mingw32-windres /usr/local/bin/windres
 
       - name: Set env variables
-        run: echo -e ZIP=${GITHUB_REPOSITORY#*/}-$TAG.zip >> $GITHUB_ENV
+        run: echo ZIP=${GITHUB_REPOSITORY#*/}-$TAG.zip >> $GITHUB_ENV
 
       - name: Build
         run: go run tasks.go -b
