@@ -14,7 +14,7 @@ func main() {
 	switch {
 	case slices.Contains(os.Args, "-b"):
 		cmd = "windres assets/res.rc -O coff -o cmd/amdalert/res.syso && " +
-			"windres assets/res.rc -O coff -o cmd/amdalert-daemon/res.syso && " +
+			"cp cmd/amdalert/res.syso cmd/amdalert-daemon/res.syso && " +
 			"go build -o AMDAlert.exe ./cmd/amdalert && " +
 			"go build -ldflags='-H=windowsgui' -o AMDAlertDaemon.exe ./cmd/amdalert-daemon"
 	case slices.Contains(os.Args, "-r"):
