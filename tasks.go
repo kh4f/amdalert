@@ -21,7 +21,7 @@ func main() {
 	case slices.Contains(os.Args, "-f"):
 		cmd = "go fmt ./..."
 	case slices.Contains(os.Args, "-l"):
-		cmd = "bunx relion"
+		cmd = "bunx relion -b cmd/amdalert/res.rc internal/cli/cli.go"
 	}
 
 	execCmd := exec.Command("bash", "-c", cmd)
