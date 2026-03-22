@@ -34,12 +34,12 @@ func Run() {
 			}
 			time.Sleep(300 * time.Millisecond)
 		case "2":
-			updateTemperature(reader, "Enter max temperature (°C): ", func(current *settings.Settings, value int) {
-				current.MaxTemp = value
+			updateTemperature(reader, "Enter alert temperature (°C): ", func(current *settings.Settings, value int) {
+				current.AlertTemp = value
 			})
 		case "3":
-			updateTemperature(reader, "Enter max fan-off temperature (°C): ", func(current *settings.Settings, value int) {
-				current.MaxFanOffTemp = value
+			updateTemperature(reader, "Enter fan-off alert temperature (°C): ", func(current *settings.Settings, value int) {
+				current.FanOffAlertTemp = value
 			})
 		case "4":
 			if daemon.IsInStartup() {
@@ -111,8 +111,8 @@ Actions
 		temp,
 		fan,
 		alertsStatus,
-		current.MaxTemp,
-		current.MaxFanOffTemp,
+		current.AlertTemp,
+		current.FanOffAlertTemp,
 		autostartStatus,
 		alertsAction,
 		autostartAction,

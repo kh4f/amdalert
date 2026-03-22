@@ -124,10 +124,10 @@ func monitorGPU() {
 		current := settings.Current
 		temp, rpm := adl.ReadGPU()
 
-		if int(temp) > current.MaxFanOffTemp && rpm == 0 {
-			win.Alert(fmt.Sprintf("GPU temperature > %d°C and fan is not spinning", current.MaxFanOffTemp))
-		} else if int(temp) > current.MaxTemp {
-			win.Alert(fmt.Sprintf("GPU temperature > %d°C", current.MaxTemp))
+		if int(temp) > current.FanOffAlertTemp && rpm == 0 {
+			win.Alert(fmt.Sprintf("GPU temperature > %d°C and fan is not spinning", current.FanOffAlertTemp))
+		} else if int(temp) > current.AlertTemp {
+			win.Alert(fmt.Sprintf("GPU temperature > %d°C", current.AlertTemp))
 		}
 
 		time.Sleep(10 * time.Second)

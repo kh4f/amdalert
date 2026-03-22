@@ -9,14 +9,14 @@ import (
 const filePath = "settings.json"
 
 type Settings struct {
-	MaxTemp       int `json:"maxTemp"`
-	MaxFanOffTemp int `json:"maxFanOffTemp"`
+	AlertTemp       int `json:"alertTemp"`
+	FanOffAlertTemp int `json:"fanOffAlertTemp"`
 }
 
 var (
 	Current = Settings{
-		MaxTemp:       60,
-		MaxFanOffTemp: 40,
+		AlertTemp:       60,
+		FanOffAlertTemp: 40,
 	}
 	modTime time.Time
 )
