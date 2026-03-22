@@ -28,7 +28,7 @@ jobs:
         run: go run tasks.go -b
 
       - name: Create release archive
-        run: zip $ZIP AMDAlert.exe
+        run: zip $ZIP AMDAlert.exe AMDAlertDaemon.exe
 
       - name: Create GitHub release
         env:
