@@ -1,23 +1,31 @@
 # Changelog
 
 
-## &ensp; [` 📦 v2.0.0  `](https://github.com/kh4f/hotamd/compare/v1.0.0...v2.0.0)
+## &ensp; [` 📦 v2.0.1  `](https://github.com/kh4f/amdalert/compare/v2.0.0...v2.0.1)
+
+### &emsp; 🎨 Style
+- **Updated app icon**: the application icon has been refreshed with a gradient. [🡥](https://github.com/kh4f/amdalert/commit/97e10b8)
+
+##### &emsp;&emsp; [Full Changelog](https://github.com/kh4f/amdalert/compare/v2.0.0...v2.0.1) &ensp;•&ensp; Mar 23, 2026
+
+
+## &ensp; [` 📦 v2.0.0  `](https://github.com/kh4f/amdalert/compare/v1.0.0...v2.0.0)
 
 ### &emsp; 🧨 BREAKING CHANGES
-- **Renamed config fields**: configuration fields are now `alertTemp` and `fanOffAlertTemp`. [🡥](https://github.com/kh4f/hotamd/commit/7906d1f)
-- **Config file renamed**: configuration is now loaded from `settings.json` instead of `config.json`. [🡥](https://github.com/kh4f/hotamd/commit/fef3986)
-- **Split into CLI and daemon**: the application now consists of two executables: `AMDAlert.exe` for CLI and `AMDAlertDaemon.exe` for the background service. [🡥](https://github.com/kh4f/hotamd/commit/e3a6b05)
+- **Renamed config fields**: configuration fields are now `alertTemp` and `fanOffAlertTemp`. [🡥](https://github.com/kh4f/amdalert/commit/7906d1f)
+- **Config file renamed**: configuration is now loaded from `settings.json` instead of `config.json`. [🡥](https://github.com/kh4f/amdalert/commit/fef3986)
+- **Split into CLI and daemon**: the application now consists of two executables: `AMDAlert.exe` for CLI and `AMDAlertDaemon.exe` for the background service. [🡥](https://github.com/kh4f/amdalert/commit/e3a6b05)
 
 ### &emsp; 📚 Documentation
-- **Enriched documentation**: added project overview, feature list, installation and usage instructions, logo, and demo screenshot. [🡥](https://github.com/kh4f/hotamd/commit/9b965d5)
+- **Enriched documentation**: added project overview, feature list, installation and usage instructions, logo, and demo screenshot. [🡥](https://github.com/kh4f/amdalert/commit/9b965d5)
 
-##### &emsp;&emsp; [Full Changelog](https://github.com/kh4f/hotamd/compare/v1.0.0...v2.0.0) &ensp;•&ensp; Mar 22, 2026
+##### &emsp;&emsp; [Full Changelog](https://github.com/kh4f/amdalert/compare/v1.0.0...v2.0.0) &ensp;•&ensp; Mar 22, 2026
 
 
 ## &ensp; [` 📦 v1.0.0  `](https://github.com/kh4f/amdalert/compare/v0.3.0...v1.0.0)
 
 ### &emsp; 🧨 BREAKING CHANGES
-- **Project renamed to `AMDAlert`**: all code, modules, binaries, registry keys, and documentation now use the `AMDAlert` name instead of `HotAMD`. [🡥](https://github.com/kh4f/amdalert/commit/05c825d)
+- **Project renamed to `AMDAlert`**: all code, modules, binaries, registry keys, and documentation now use the `AMDAlert` name instead of `amdalert`. [🡥](https://github.com/kh4f/amdalert/commit/05c825d)
 
 ### &emsp; 🎁 Features
 - **Windows autostart support**: the app can now be added to or removed from Windows startup via the CLI. [🡥](https://github.com/kh4f/amdalert/commit/3bce049)
