@@ -1,6 +1,14 @@
 # Changelog
 
 
+## &ensp; [` 📦 v3.0.1  `](https://github.com/kh4f/amdalert/compare/v3.0.0...v3.0.1)
+
+### &emsp; 🎨 Style
+- **Sharper app icon**: fixed icon blurriness when displayed at small sizes. [🡥](https://github.com/kh4f/amdalert/commit/2a1558c)
+
+##### &emsp;&emsp; [Full Changelog](https://github.com/kh4f/amdalert/compare/v3.0.0...v3.0.1) &ensp;•&ensp; Mar 25, 2026
+
+
 ## &ensp; [` 📦 v3.0.0  `](https://github.com/kh4f/amdalert/compare/v2.0.1...v3.0.0)
 
 ### &emsp; 🧨 BREAKING CHANGES
