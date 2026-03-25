@@ -4,7 +4,7 @@
 ## &ensp; [` 📦 v3.0.0  `](https://github.com/kh4f/amdalert/compare/v2.0.1...v3.0.0)
 
 ### &emsp; 🧨 BREAKING CHANGES
-- **YAML Config Migration**: Configuration is now stored in `config.yml` using YAML syntax instead of `config.json`. [🡥](https://github.com/kh4f/amdalert/commit/a856e4e)
+- **YAML Config Migration**: configuration is now stored in `config.yml` using YAML syntax instead of `settings.json`. [🡥](https://github.com/kh4f/amdalert/commit/a856e4e)
 
 ##### &emsp;&emsp; [Full Changelog](https://github.com/kh4f/amdalert/compare/v2.0.1...v3.0.0) &ensp;•&ensp; Mar 25, 2026
 
