@@ -1,4 +1,4 @@
-package settings
+package config
 
 import (
 	"encoding/json"
@@ -6,15 +6,15 @@ import (
 	"time"
 )
 
-const filePath = "settings.json"
+const filePath = "config.json"
 
-type Settings struct {
+type Config struct {
 	AlertTemp       int `json:"alertTemp"`
 	FanOffAlertTemp int `json:"fanOffAlertTemp"`
 }
 
 var (
-	Current = Settings{
+	Current = Config{
 		AlertTemp:       60,
 		FanOffAlertTemp: 40,
 	}

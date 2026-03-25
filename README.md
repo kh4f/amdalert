@@ -30,7 +30,7 @@ Download the [latest release](https://github.com/kh4f/amdalert/releases/latest) 
 ## 🕹️ Usage
 
 - Control the app via CLI (`AMDAlert.exe`).
-- Configuration is stored in `settings.json` (created automatically on first run). You can edit it manually or via CLI commands.
+- Configuration is stored in `config.json` (created automatically on first run). You can edit it manually or via CLI commands.
 - Enabling alerts starts a background service (`AMDAlertDaemon.exe`) that checks the GPU state every 10 sec and shows notifications when needed.
 
 </br>

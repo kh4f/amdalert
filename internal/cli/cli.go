@@ -2,8 +2,8 @@ package cli
 
 import (
 	"amdalert/internal/adl"
+	"amdalert/internal/config"
 	"amdalert/internal/daemon"
-	"amdalert/internal/settings"
 	"bufio"
 	"fmt"
 	"os"
@@ -34,11 +34,11 @@ func Run() {
 			}
 			time.Sleep(300 * time.Millisecond)
 		case "2":
-			updateTemperature(reader, "Enter alert temperature (°C): ", func(current *settings.Settings, value int) {
+			updateTemperature(reader, "Enter alert temperature (°C): ", func(current *config.Config, value int) {
 				current.AlertTemp = value
 			})
 		case "3":
-			updateTemperature(reader, "Enter fan-off alert temperature (°C): ", func(current *settings.Settings, value int) {
+			updateTemperature(reader, "Enter fan-off alert temperature (°C): ", func(current *config.Config, value int) {
 				current.FanOffAlertTemp = value
 			})
 		case "4":
@@ -53,7 +53,7 @@ func Run() {
 	}
 }
 
-func updateTemperature(reader *bufio.Reader, prompt string, apply func(*settings.Settings, int)) {
+func updateTemperature(reader *bufio.Reader, prompt string, apply func(*config.Config, int)) {
 	fmt.Print(prompt)
 
 	input, _ := reader.ReadString('\n')
@@ -65,15 +65,15 @@ func updateTemperature(reader *bufio.Reader, prompt string, apply func(*settings
 		return
 	}
 
-	current := settings.Current
+	current := config.Current
 	apply(&current, value)
-	settings.Current = current
-	_ = settings.Save()
+	config.Current = current
+	_ = config.Save()
 }
 
 func printMenu() {
 	temp, fan := adl.ReadGPU()
-	current := settings.Current
+	current := config.Current
 
 	alertsStatus := "off"
 	alertsAction := "Enable alerts"

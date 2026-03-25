@@ -2,7 +2,7 @@ package daemon
 
 import (
 	"amdalert/internal/adl"
-	"amdalert/internal/settings"
+	"amdalert/internal/config"
 	"amdalert/internal/win"
 	"fmt"
 	"os"
@@ -119,9 +119,9 @@ func IsInStartup() bool {
 
 func monitorGPU() {
 	for {
-		_, _ = settings.ReloadIfChanged()
+		_, _ = config.ReloadIfChanged()
 
-		current := settings.Current
+		current := config.Current
 		temp, rpm := adl.ReadGPU()
 
 		if int(temp) > current.FanOffAlertTemp && rpm == 0 {

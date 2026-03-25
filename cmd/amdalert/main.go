@@ -3,13 +3,13 @@ package main
 import (
 	"amdalert/internal/adl"
 	"amdalert/internal/cli"
-	"amdalert/internal/settings"
+	"amdalert/internal/config"
 )
 
 func main() {
 	adl.Init()
 	defer adl.Destroy()
 
-	settings.Load()
+	config.Load()
 	cli.Run()
 }

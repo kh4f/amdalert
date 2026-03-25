@@ -2,14 +2,14 @@ package main
 
 import (
 	"amdalert/internal/adl"
+	"amdalert/internal/config"
 	"amdalert/internal/daemon"
-	"amdalert/internal/settings"
 )
 
 func main() {
 	adl.Init()
 	defer adl.Destroy()
 
-	settings.Load()
+	config.Load()
 	daemon.Run()
 }
