@@ -1,16 +1,17 @@
 package config
 
 import (
-	"encoding/json"
 	"os"
 	"time"
+
+	"gopkg.in/yaml.v3"
 )
 
-const filePath = "config.json"
+const filePath = "config.yml"
 
 type Config struct {
-	AlertTemp       int `json:"alertTemp"`
-	FanOffAlertTemp int `json:"fanOffAlertTemp"`
+	AlertTemp       int `yaml:"alertTemp"`
+	FanOffAlertTemp int `yaml:"fanOffAlertTemp"`
 }
 
 var (
@@ -31,7 +32,7 @@ func Load() error {
 	}
 
 	loaded := Current
-	if err := json.Unmarshal(data, &loaded); err != nil {
+	if err := yaml.Unmarshal(data, &loaded); err != nil {
 		return err
 	}
 
@@ -46,7 +47,7 @@ func Load() error {
 }
 
 func Save() error {
-	data, err := json.MarshalIndent(Current, "", "  ")
+	data, err := yaml.Marshal(Current)
 	if err != nil {
 		return err
 	}
