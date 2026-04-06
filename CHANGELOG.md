@@ -1,6 +1,14 @@
 # Changelog
 
 
+## &ensp; [` 📦 v3.0.2  `](https://github.com/kh4f/amdalert/compare/v3.0.1...v3.0.2)
+
+### &emsp; 🩹 Fixes
+- **Reliable startup config loading**: the daemon now always reads `config.yml` from the executable directory, so custom temperature thresholds no longer get lost when `AMDAlertDaemon.exe` is launched from Windows startup with a different working directory. [🡥](https://github.com/kh4f/amdalert/commit/8c2c637)
+
+##### &emsp;&emsp; [Full Changelog](https://github.com/kh4f/amdalert/compare/v3.0.1...v3.0.2) &ensp;•&ensp; Apr 6, 2026
+
+
 ## &ensp; [` 📦 v3.0.1  `](https://github.com/kh4f/amdalert/compare/v3.0.0...v3.0.1)
 
 ### &emsp; 🎨 Style
