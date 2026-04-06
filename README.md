@@ -29,6 +29,6 @@ Download and extract the [latest release](https://github.com/kh4f/amdalert/relea
 
 ## 🕹️ Usage
 
-- Control the app via CLI `AMDAlert.exe`.
+- Control the app from the command line with `AMDAlert.exe`.
 - Configuration is stored in `config.yml` (created automatically on first run). You can edit it manually or via CLI сommands.
-- Enabling alerts starts a background service `AMDAlertDaemon.exe`, that runs every 10 sec, reloading the config if updated and showing notifications when needed.
+- Enabling alerts launches `AMDAlertDaemon.exe` in the background, that runs every 10 sec, reloading the config if updated and showing notifications when needed.
