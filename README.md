@@ -20,8 +20,8 @@
 
 - Monitors GPU state and triggers alerts on overheating
 - Detects fan failures (zero RPM under load)
-- Configurable temperature thresholds
-- Background service with Windows startup support
+- Simple YAML configuration
+- Launch at Windows startup
 
 ## 📥 Installation
 
