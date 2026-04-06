@@ -2,12 +2,13 @@ package config
 
 import (
 	"os"
+	"path/filepath"
 	"time"
 
 	"gopkg.in/yaml.v3"
 )
 
-const filePath = "config.yml"
+const fileName = "config.yml"
 
 type Config struct {
 	AlertTemp       int `yaml:"alertTemp"`
@@ -23,6 +24,7 @@ var (
 )
 
 func Load() error {
+	filePath := configFilePath()
 	data, err := os.ReadFile(filePath)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -52,6 +54,7 @@ func Save() error {
 		return err
 	}
 
+	filePath := configFilePath()
 	if err := os.WriteFile(filePath, data, 0o644); err != nil {
 		return err
 	}
@@ -66,6 +69,7 @@ func Save() error {
 }
 
 func ReloadIfChanged() (bool, error) {
+	filePath := configFilePath()
 	info, err := os.Stat(filePath)
 	if err != nil {
 		return false, err
@@ -76,4 +80,12 @@ func ReloadIfChanged() (bool, error) {
 	}
 
 	return true, Load()
+}
+
+func configFilePath() string {
+	exePath, err := os.Executable()
+	if err != nil {
+		return fileName
+	}
+	return filepath.Join(filepath.Dir(exePath), fileName)
 }

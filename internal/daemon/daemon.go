@@ -52,6 +52,7 @@ func Start() {
 
 	daemonExe := filepath.Join(filepath.Dir(exePath), daemonFileName)
 	cmd := exec.Command(daemonExe)
+	cmd.Dir = filepath.Dir(daemonExe)
 	cmd.SysProcAttr = &syscall.SysProcAttr{CreationFlags: 0x00000008}
 	cmd.Start()
 }
