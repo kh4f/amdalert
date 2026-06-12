@@ -20,9 +20,7 @@
 </div>
 
 ## 👀 Overview
-**AMDAlert** is a Windows utility that monitors your AMD GPU and warns you about overheating.
-
-It’s especially useful for older cards, where the fan may silently stop.
+**AMDAlert** is a Windows utility that monitors your AMD GPU and warns you about overheating. It’s especially useful for older cards, where the fan may silently stop.
 
 ### 🔥 Features
 - Monitors GPU state and alerts on overheating
