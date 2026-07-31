@@ -1,4 +1,6 @@
 use std::{
+    env,
+    process::Command,
     sync::Arc,
     sync::atomic::{AtomicBool, Ordering},
     thread,
@@ -7,11 +9,14 @@ use std::{
 
 use windows::{
     Win32::{
-        Foundation::{CloseHandle, HANDLE},
-        Storage::FileSystem::{PIPE_ACCESS_DUPLEX, ReadFile},
+        Foundation::{CloseHandle, GENERIC_READ, GENERIC_WRITE, HANDLE},
+        Storage::FileSystem::{
+            CreateFileW, FILE_ATTRIBUTE_NORMAL, FILE_SHARE_NONE, OPEN_EXISTING, PIPE_ACCESS_DUPLEX,
+            ReadFile, WriteFile,
+        },
         System::Pipes::{
             ConnectNamedPipe, CreateNamedPipeW, DisconnectNamedPipe, PIPE_READMODE_MESSAGE,
-            PIPE_TYPE_MESSAGE, PIPE_WAIT,
+            PIPE_TYPE_MESSAGE, PIPE_WAIT, WaitNamedPipeW,
         },
     },
     core::{PCWSTR, w},
@@ -52,6 +57,34 @@ pub fn run() -> AnyResult {
     monitor.thread().unpark();
     monitor.join().ok();
     unsafe { CloseHandle(pipe) }?;
+    Ok(())
+}
+
+pub fn spawn() -> AnyResult {
+    Command::new(env::current_exe()?).arg(DAEMON_FLAG).spawn()?;
+    Ok(())
+}
+
+pub fn is_daemon_running() -> bool {
+    unsafe { WaitNamedPipeW(PIPE_NAME, 0) }.into()
+}
+
+pub fn send_message(msg: &str) -> AnyResult {
+    let pipe = unsafe {
+        CreateFileW(
+            PIPE_NAME,
+            (GENERIC_READ | GENERIC_WRITE).0,
+            FILE_SHARE_NONE,
+            None,
+            OPEN_EXISTING,
+            FILE_ATTRIBUTE_NORMAL,
+            None,
+        )
+    }?;
+
+    unsafe { WriteFile(pipe, Some(msg.as_bytes()), None, None) }?;
+    unsafe { CloseHandle(pipe) }?;
+
     Ok(())
 }
 
