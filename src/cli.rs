@@ -1,21 +1,43 @@
-use std::io::{self, Write};
+use std::{
+    io::{self, Write},
+    thread,
+    time::Duration,
+};
 
-use crate::{AnyResult, adlx};
+use crate::{AnyResult, adlx, config};
+
+const FEEDBACK_DELAY: Duration = Duration::from_millis(500);
 
 pub fn run() -> AnyResult {
+    let mut cfg = config::Config::load();
+
     loop {
         let gpu = adlx::gpu_info()?;
 
-        print_menu(&gpu);
+        print_menu(&gpu, cfg.threshold);
 
         match read_choice()?.as_str() {
             "1" => break Ok(()),
+            "2" => {
+                print!("New threshold (°C): ");
+                io::stdout().flush().ok();
+                match read_choice()?.parse::<u32>() {
+                    Ok(val) => {
+                        cfg.set_threshold(val)?;
+                        println!("Threshold set to {val}°C");
+                    }
+                    Err(_) => {
+                        println!("Invalid number");
+                    }
+                }
+                thread::sleep(FEEDBACK_DELAY);
+            }
             _ => {}
         }
     }
 }
 
-fn print_menu(gpu: &adlx::GpuInfo) {
+fn print_menu(gpu: &adlx::GpuInfo, threshold: u32) {
     print!(
         "\x1B[2J\x1B[H\
 🚨 AMDlert
@@ -26,6 +48,7 @@ GPU ({gpu_name})
 
 Actions
   1) Exit
+  2) Set threshold {threshold}°C
 
 > ",
         gpu_name = gpu.name,
