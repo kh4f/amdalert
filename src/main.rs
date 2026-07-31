@@ -1,4 +1,7 @@
-use std::{error::Error, io::{self, Write}};
+use std::{
+    error::Error,
+    io::{self, Write},
+};
 
 type AnyResult<T = ()> = Result<T, Box<dyn Error>>;
 
@@ -25,7 +28,8 @@ fn print_menu() {
 Actions
   1) Exit
 
-> ");
+> "
+    );
 
     io::stdout().flush().ok();
 }
