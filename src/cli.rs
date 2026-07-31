@@ -90,9 +90,9 @@ GPU ({gpu_name})
   Fan speed:    {gpu_fan_speed} RPM
 
 Actions
-  1) {daemon_action} {daemon_status}
-  2) {threshold_action} {threshold}°C
-  3) {autostart_action} {autostart_status}
+  1) {daemon_action:<19} {daemon_status}
+  2) {threshold_action:<22} {threshold}°C
+  3) {autostart_action:<19} {autostart_status}
   4) Exit
 
 > ",
