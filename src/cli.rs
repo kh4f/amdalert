@@ -2,13 +2,19 @@ use std::{
     env,
     ffi::c_void,
     io::{self, Write},
-    iter, ptr, thread,
+    iter, ptr, slice, thread,
     time::Duration,
 };
 
 use windows::{
-    Win32::Storage::FileSystem::{
-        GetFileVersionInfoSizeW, GetFileVersionInfoW, VS_FIXEDFILEINFO, VerQueryValueW,
+    Win32::{
+        Storage::FileSystem::{
+            GetFileVersionInfoSizeW, GetFileVersionInfoW, VS_FIXEDFILEINFO, VerQueryValueW,
+        },
+        System::Registry::{
+            HKEY, HKEY_CURRENT_USER, KEY_QUERY_VALUE, KEY_SET_VALUE, REG_SZ, RegCloseKey,
+            RegDeleteValueW, RegOpenKeyExW, RegQueryValueExW, RegSetValueExW,
+        },
     },
     core::{PCWSTR, w},
 };
@@ -18,6 +24,8 @@ use crate::{
     daemon::{self, STOP_COMMAND},
 };
 
+const APP_NAME: PCWSTR = w!("AMDlert");
+const RUN_KEY: PCWSTR = w!(r"Software\Microsoft\Windows\CurrentVersion\Run");
 const FEEDBACK_DELAY: Duration = Duration::from_millis(500);
 
 pub fn run() -> AnyResult {
@@ -55,6 +63,16 @@ pub fn run() -> AnyResult {
                 }
                 thread::sleep(FEEDBACK_DELAY);
             }
+            "3" if autostart_enabled() => {
+                set_autostart(false)?;
+                println!("Autostart disabled");
+                thread::sleep(FEEDBACK_DELAY);
+            }
+            "3" => {
+                set_autostart(true)?;
+                println!("Autostart enabled");
+                thread::sleep(FEEDBACK_DELAY);
+            }
             "4" => break Ok(()),
             _ => {}
         }
@@ -73,23 +91,19 @@ GPU ({gpu_name})
 
 Actions
   1) {daemon_action} {daemon_status}
-  2) Set threshold {threshold}°C
+  2) {threshold_action} {threshold}°C
+  3) {autostart_action} {autostart_status}
   4) Exit
 
 > ",
         gpu_name = gpu.name,
         gpu_temperature = gpu.temperature,
         gpu_fan_speed = gpu.fan_speed,
-        daemon_action = if daemon_running {
-            "Stop daemon"
-        } else {
-            "Run daemon"
-        },
-        daemon_status = if daemon_running {
-            "🟢 running"
-        } else {
-            "🔴 not running"
-        },
+        daemon_status = if daemon_running { "🟢 running" } else { "🔴 not running" },
+        autostart_status = if autostart_enabled() { "🟢 enabled" } else { "🔴 disabled" },
+        daemon_action = if daemon_running { "Stop daemon" } else { "Run daemon" },
+        threshold_action = "Set threshold",
+        autostart_action = if autostart_enabled() { "Disable autostart" } else { "Enable autostart" },
     );
 
     io::stdout().flush().ok();
@@ -144,4 +158,72 @@ fn get_app_version() -> AnyResult<String> {
     let minor = (verinfo.dwProductVersionMS & 0xFFFF) as u16;
     let patch = (verinfo.dwProductVersionLS >> 16) as u16;
     Ok(format!("{major}.{minor}.{patch}"))
+}
+
+fn autostart_enabled() -> bool {
+    let mut hkey = HKEY::default();
+    if unsafe {
+        RegOpenKeyExW(
+            HKEY_CURRENT_USER,
+            RUN_KEY,
+            Some(0),
+            KEY_QUERY_VALUE,
+            &mut hkey,
+        )
+    }
+    .is_err()
+    {
+        return false;
+    }
+
+    let exists = unsafe { RegQueryValueExW(hkey, APP_NAME, None, None, None, None).is_ok() };
+
+    #[expect(unused_must_use)]
+    unsafe {
+        RegCloseKey(hkey)
+    };
+    exists
+}
+
+fn set_autostart(enabled: bool) -> AnyResult {
+    let mut hkey = HKEY::default();
+    if unsafe {
+        RegOpenKeyExW(
+            HKEY_CURRENT_USER,
+            RUN_KEY,
+            Some(0),
+            KEY_SET_VALUE,
+            &mut hkey,
+        )
+    }
+    .is_err()
+    {
+        return Err("failed to open registry key".into());
+    }
+
+    if enabled {
+        let exe = env::current_exe()?;
+        let path = format!("\"{}\" --daemon", exe.display());
+        let wide: Vec<u16> = path.encode_utf16().chain(iter::once(0)).collect();
+        let data = unsafe { slice::from_raw_parts(wide.as_ptr() as *const u8, wide.len() * 2) };
+
+        if unsafe { RegSetValueExW(hkey, APP_NAME, None, REG_SZ, Some(data)) }.is_err() {
+            #[expect(unused_must_use)]
+            unsafe {
+                RegCloseKey(hkey)
+            };
+            return Err("failed to set registry value".into());
+        }
+    } else {
+        #[expect(unused_must_use)]
+        unsafe {
+            RegDeleteValueW(hkey, APP_NAME)
+        };
+    }
+
+    #[expect(unused_must_use)]
+    unsafe {
+        RegCloseKey(hkey)
+    };
+    Ok(())
 }
