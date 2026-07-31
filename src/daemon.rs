@@ -18,11 +18,12 @@ use windows::{
             ConnectNamedPipe, CreateNamedPipeW, DisconnectNamedPipe, PIPE_READMODE_MESSAGE,
             PIPE_TYPE_MESSAGE, PIPE_WAIT, WaitNamedPipeW,
         },
+        UI::WindowsAndMessaging::{MB_ICONWARNING, MB_OK, MessageBoxW},
     },
-    core::{PCWSTR, w},
+    core::{HSTRING, PCWSTR, w},
 };
 
-use crate::AnyResult;
+use crate::{AnyResult, adlx, config};
 
 pub const DAEMON_FLAG: &str = "--daemon";
 pub const STOP_COMMAND: &str = "STOP";
@@ -36,6 +37,13 @@ pub fn run() -> AnyResult {
         loop {
             if !flag.load(Ordering::Relaxed) {
                 break;
+            }
+
+            if let Ok(gpu) = adlx::gpu_info() {
+                let cfg = config::Config::load();
+                if gpu.temperature > cfg.threshold {
+                    show_warning(gpu.temperature, cfg.threshold);
+                }
             }
 
             thread::park_timeout(Duration::from_secs(10));
@@ -86,6 +94,15 @@ pub fn send_message(msg: &str) -> AnyResult {
     unsafe { CloseHandle(pipe) }?;
 
     Ok(())
+}
+
+fn show_warning(temp: u32, threshold: u32) {
+    let title = HSTRING::from("AMDlert");
+    let text = HSTRING::from(format!("{temp}°C exceeds {threshold}°C threshold"));
+
+    unsafe {
+        MessageBoxW(None, &text, &title, MB_OK | MB_ICONWARNING);
+    }
 }
 
 fn create_pipe() -> HANDLE {
