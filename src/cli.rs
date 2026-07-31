@@ -1,10 +1,12 @@
 use std::io::{self, Write};
 
-use crate::AnyResult;
+use crate::{AnyResult, adlx};
 
 pub fn run() -> AnyResult {
     loop {
-        print_menu();
+        let gpu = adlx::gpu_info()?;
+
+        print_menu(&gpu);
 
         match read_choice()?.as_str() {
             "1" => break Ok(()),
@@ -13,15 +15,22 @@ pub fn run() -> AnyResult {
     }
 }
 
-fn print_menu() {
+fn print_menu(gpu: &adlx::GpuInfo) {
     print!(
         "\x1B[2J\x1B[H\
 🚨 AMDlert
 
+GPU ({gpu_name})
+  Temperature:  {gpu_temperature}°C
+  Fan speed:    {gpu_fan_speed} RPM
+
 Actions
   1) Exit
 
-> "
+> ",
+        gpu_name = gpu.name,
+        gpu_temperature = gpu.temperature,
+        gpu_fan_speed = gpu.fan_speed,
     );
 
     io::stdout().flush().ok();
