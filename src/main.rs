@@ -1,10 +1,12 @@
-use std::io::{self, Write};
+use std::{error::Error, io::{self, Write}};
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+type AnyResult<T = ()> = Result<T, Box<dyn Error>>;
+
+fn main() -> AnyResult {
     run_cli()
 }
 
-fn run_cli() -> Result<(), Box<dyn std::error::Error>> {
+fn run_cli() -> AnyResult {
     loop {
         print_menu();
 
@@ -28,7 +30,7 @@ Actions
     io::stdout().flush().ok();
 }
 
-fn read_choice() -> Result<String, Box<dyn std::error::Error>> {
+fn read_choice() -> AnyResult<String> {
     let mut input = String::new();
     io::stdin().read_line(&mut input)?;
     Ok(input.trim().to_string())
