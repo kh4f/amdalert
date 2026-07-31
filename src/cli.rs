@@ -99,11 +99,27 @@ Actions
         gpu_name = gpu.name,
         gpu_temperature = gpu.temperature,
         gpu_fan_speed = gpu.fan_speed,
-        daemon_status = if daemon_running { "🟢 running" } else { "🔴 not running" },
-        autostart_status = if autostart_enabled() { "🟢 enabled" } else { "🔴 disabled" },
-        daemon_action = if daemon_running { "Stop daemon" } else { "Run daemon" },
+        daemon_status = if daemon_running {
+            "🟢 running"
+        } else {
+            "🔴 not running"
+        },
+        autostart_status = if autostart_enabled() {
+            "🟢 enabled"
+        } else {
+            "🔴 disabled"
+        },
+        daemon_action = if daemon_running {
+            "Stop daemon"
+        } else {
+            "Run daemon"
+        },
         threshold_action = "Set threshold",
-        autostart_action = if autostart_enabled() { "Disable autostart" } else { "Enable autostart" },
+        autostart_action = if autostart_enabled() {
+            "Disable autostart"
+        } else {
+            "Enable autostart"
+        },
     );
 
     io::stdout().flush().ok();
