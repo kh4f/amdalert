@@ -1,0 +1,42 @@
+name: release
+
+on: { push: { tags: v*.*.* } }
+
+env:
+  BIN_NAME: AMDlert
+  TAG: ${{ github.ref_name }}
+
+jobs:
+  release:
+    runs-on: windows-latest
+    permissions: { contents: write }
+    steps:
+      - uses: actions/checkout@v7
+        with: { submodules: true }
+      - uses: actions/cache@v6
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - uses: extractions/setup-just@v4
+
+      - run: just lint
+      - run: just build
+
+      - shell: bash
+        run: |
+          REPO=${{ github.event.repository.name }}
+          VER=${TAG#v}
+          BIN=target/release/$BIN_NAME.exe
+          ZIP=dist/$REPO-$VER-windows-x64.zip
+
+          mkdir dist
+          python3 -m zipfile -c $ZIP $BIN
+
+      - run: gh release create --title $TAG --draft $TAG dist/*.zip
+        env:
+          GH_TOKEN: ${{ github.token }}
