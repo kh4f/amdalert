@@ -1,6 +1,22 @@
 # Changelog
 
 
+## &ensp; [` 📦 v4.0.0  `](https://github.com/kh4f/amdlert/compare/v3.0.2...v4.0.0)
+
+### &emsp; 📢 BREAKING CHANGES
+- **Complete rewrite in Rust**: the app has been fully rewritten from Go to Rust. It now ships as a single `AMDlert.exe` that covers both the interactive CLI and the background daemon — no separate daemon binary anymore. [🡥](https://github.com/kh4f/amdlert/commit/97ce17c)
+- **Config format changed**: settings are now stored in `config.json` instead of the old `config.yml`. [🡥](https://github.com/kh4f/amdlert/commit/30c40c4)
+- **Fan speed alerts removed**: monitoring now focuses on temperature only, keeping the app simpler. [🡥](https://github.com/kh4f/amdlert/commit/6256231)
+
+### &emsp; ⚡ Performance
+- **~32× smaller binary and faster startup**: the Rust rewrite combined with a size-optimized release profile (`opt-level = "z"`, LTO, single codegen unit) dramatically shrinks the executable and speeds it up. [🡥](https://github.com/kh4f/amdlert/commit/35419cf)
+
+### &emsp; 🎨 Style
+- **Cleaner CLI menu**: the interactive menu was made more concise. [🡥](https://github.com/kh4f/amdlert/commit/f506702)
+
+##### &emsp;&emsp; [Commit log](https://github.com/kh4f/amdlert/compare/v3.0.2...v4.0.0) &ensp;•&ensp; Aug 9, 2026
+
+
 ## &ensp; [` 📦 v3.0.2  `](https://github.com/kh4f/amdalert/compare/v3.0.1...v3.0.2)
 
 ### &emsp; 🩹 Fixes
