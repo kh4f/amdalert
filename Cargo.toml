@@ -3,6 +3,10 @@ name = "amdlert"
 version = "3.0.2"
 edition = "2024"
 
+[[bin]]
+name = "AMDlert"
+path = "src/main.rs"
+
 [dependencies]
 windows = { version = "0.62", features = [
 	"Win32_Foundation",
