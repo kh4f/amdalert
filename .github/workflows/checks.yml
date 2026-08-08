@@ -17,7 +17,7 @@ jobs:
             ~/.cargo/git/db/
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - uses: extractions/setup-just@v4
 
-      - run: cargo fmt --check
-      - run: cargo clippy -- -D warnings
-      - run: cargo build --release
+      - run: just lint
+      - run: just build
