@@ -37,6 +37,7 @@ jobs:
           mkdir dist
           python3 -m zipfile -c $ZIP $BIN
 
-      - run: gh release create --title $TAG --draft $TAG dist/*.zip
+      - shell: bash
+        run: gh release create --title $TAG --draft $TAG dist/*.zip
         env:
           GH_TOKEN: ${{ github.token }}
