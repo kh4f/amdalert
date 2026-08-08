@@ -2,6 +2,13 @@
 name = "amdlert"
 version = "3.0.2"
 edition = "2024"
+description = "🚨 Overheating Alerts for AMD GPUs"
+authors = ["kh4f"]
+license = "MIT"
+repository = "https://github.com/kh4f/amdlert"
+readme = "README.md"
+keywords = ["amd-gpu", "temperature-monitoring", "alerts"]
+categories = ["hardware-support", "command-line-utilities", "os::windows-apis"]
 
 [[bin]]
 name = "AMDlert"
