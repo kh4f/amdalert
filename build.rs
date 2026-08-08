@@ -18,7 +18,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let ico_path = ico_path
         .to_str()
         .ok_or("failed to convert ico path to &str")?;
-    svico::convert(Path::new("assets/icon.svg"), &ico_path, &[16, 24, 32, 256])?;
+    svico::convert(Path::new("assets/icon.svg"), ico_path, &[16, 24, 32, 256])?;
 
     winresource::WindowsResource::new()
         .set("FileDescription", "AMDlert")
