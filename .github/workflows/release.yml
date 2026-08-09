@@ -6,6 +6,7 @@ on:
 
 env:
   BIN_NAME: AMDlert
+  PLATFORM: windows-x64
   TAG: ${{ github.ref_name }}
 
 defaults:
@@ -40,7 +41,7 @@ jobs:
           VER=${TAG#v}
           BIN=target/release/$BIN_NAME.exe
           OUT=dist/$BIN_NAME
-          ZIP=dist/$REPO-$VER-windows-x64.zip
+          ZIP=dist/$REPO-$VER-$PLATFORM.zip
 
           mkdir -p $OUT
           cp $BIN $OUT
