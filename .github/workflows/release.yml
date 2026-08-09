@@ -6,6 +6,8 @@ env:
   BIN_NAME: AMDlert
   TAG: ${{ github.ref_name }}
 
+defaults: { run: { shell: bash } }
+
 jobs:
   release:
     runs-on: windows-latest
@@ -27,8 +29,7 @@ jobs:
       - run: just lint
       - run: just build
 
-      - shell: bash
-        run: |
+      - run: |
           REPO=${{ github.event.repository.name }}
           VER=${TAG#v}
           BIN=target/release/$BIN_NAME.exe
@@ -37,7 +38,6 @@ jobs:
           mkdir dist
           python3 -m zipfile -c $ZIP $BIN
 
-      - shell: bash
-        run: gh release create --title $TAG --draft $TAG dist/*.zip
+      - run: gh release create --title $TAG --draft $TAG dist/*.zip
         env:
           GH_TOKEN: ${{ github.token }}
