@@ -1,13 +1,16 @@
 name: checks
 
-on: { push: { branches: '**' } }
+on:
+  push:
+    branches: '**'
 
 jobs:
   verify:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v7
-        with: { submodules: true }
+        with:
+          submodules: true
       - uses: actions/cache@v6
         with:
           path: |
