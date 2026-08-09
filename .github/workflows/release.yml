@@ -35,8 +35,10 @@ jobs:
           BIN=target/release/$BIN_NAME.exe
           ZIP=dist/$REPO-$VER-windows-x64.zip
 
-          mkdir dist
-          python3 -m zipfile -c $ZIP $BIN
+          mkdir -p dist/AMDlert
+          cp $BIN dist/AMDlert/
+          cd dist
+          python3 -m zipfile -c $REPO-$VER-windows-x64.zip AMDlert
 
       - run: gh release create --title $TAG --draft $TAG dist/*.zip
         env:
