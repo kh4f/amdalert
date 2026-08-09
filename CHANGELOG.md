@@ -1,6 +1,20 @@
 # Changelog
 
 
+## &ensp; [` 📦 v4.0.1  `](https://github.com/kh4f/amdlert/compare/v4.0.0...v4.0.1)
+
+### &emsp; 🩹 Fixes
+- **Daemon survives closing the terminal**: the daemon is now spawned detached from the console, so it keeps monitoring in the background even after the terminal window is closed, instead of being terminated with it. [🡥](https://github.com/kh4f/amdlert/commit/e4f298b)
+
+### &emsp; 🎁 Features
+- **Release zip bundles an `AMDlert/` folder**: the archive now contains a ready-to-move folder with the executable inside, so the whole app can be dropped into `C:/Program Files/` as-is. [🡥](https://github.com/kh4f/amdlert/commit/7931bda)
+
+### &emsp; 🎨 Style
+- **Siren emoji in the warning title**: the overheat alert now opens with a 🚨 prefix for extra visibility. [🡥](https://github.com/kh4f/amdlert/commit/3b58795)
+
+##### &emsp;&emsp; [Commit log](https://github.com/kh4f/amdlert/compare/v4.0.0...v4.0.1) &ensp;•&ensp; Aug 9, 2026
+
+
 ## &ensp; [` 📦 v4.0.0  `](https://github.com/kh4f/amdlert/compare/v3.0.2...v4.0.0)
 
 ### &emsp; 📢 BREAKING CHANGES
