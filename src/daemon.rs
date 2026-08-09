@@ -97,7 +97,7 @@ pub fn send_message(msg: &str) -> AnyResult {
 }
 
 fn show_warning(temp: u32, threshold: u32) {
-    let title = HSTRING::from("AMDlert");
+    let title = HSTRING::from("🚨 AMDlert");
     let text = HSTRING::from(format!("{temp}°C exceeds {threshold}°C threshold"));
 
     unsafe {
