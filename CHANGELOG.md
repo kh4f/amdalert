@@ -6,7 +6,7 @@
 ### &emsp; 🩹 Fixes
 - **Daemon survives closing the terminal**: the daemon is now spawned detached from the console, so it keeps monitoring in the background even after the terminal window is closed, instead of being terminated with it. [🡥](https://github.com/kh4f/amdlert/commit/e4f298b)
 
-### &emsp; 🎁 Features
+### &emsp; 📦 Distribution
 - **Release zip bundles an `AMDlert/` folder**: the archive now contains a ready-to-move folder with the executable inside, so the whole app can be dropped into `C:/Program Files/` as-is. [🡥](https://github.com/kh4f/amdlert/commit/7931bda)
 
 ### &emsp; 🎨 Style
