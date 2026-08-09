@@ -1,5 +1,6 @@
 use std::{
     env,
+    os::windows::process::CommandExt,
     process::Command,
     sync::Arc,
     sync::atomic::{AtomicBool, Ordering},
@@ -18,6 +19,7 @@ use windows::{
             ConnectNamedPipe, CreateNamedPipeW, DisconnectNamedPipe, PIPE_READMODE_MESSAGE,
             PIPE_TYPE_MESSAGE, PIPE_WAIT, WaitNamedPipeW,
         },
+        System::Threading::DETACHED_PROCESS,
         UI::WindowsAndMessaging::{MB_ICONWARNING, MB_OK, MessageBoxW},
     },
     core::{HSTRING, PCWSTR, w},
@@ -69,7 +71,10 @@ pub fn run() -> AnyResult {
 }
 
 pub fn spawn() -> AnyResult {
-    Command::new(env::current_exe()?).arg(DAEMON_FLAG).spawn()?;
+    Command::new(env::current_exe()?)
+        .arg(DAEMON_FLAG)
+        .creation_flags(DETACHED_PROCESS.0)
+        .spawn()?;
     Ok(())
 }
 
