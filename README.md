@@ -26,8 +26,8 @@
 
 ## 📥 Install
 
-1. Download the [latest release](https://github.com/kh4f/amdlert/releases)
-2. Place `AMDlert.exe` in a permanent location (e.g., `C:/Program Files/AMDlert/`)
+1. Download and extract the [latest release](https://github.com/kh4f/amdlert/releases) `.zip`
+2. Move the `AMDlert` folder to your preferred location (e.g., `C:/Program Files/`).
 
 ## 🕹️ Usage
 
