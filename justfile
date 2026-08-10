@@ -4,6 +4,3 @@ lint:
 
 build:
 	cargo build --release
-
-release:
-	bunx relion -b Cargo.toml
