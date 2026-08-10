@@ -1,6 +1,5 @@
 use std::{
     env,
-    os::windows::process::CommandExt,
     process::Command,
     sync::Arc,
     sync::atomic::{AtomicBool, Ordering},
@@ -15,11 +14,11 @@ use windows::{
             CreateFileW, FILE_ATTRIBUTE_NORMAL, FILE_SHARE_NONE, OPEN_EXISTING, PIPE_ACCESS_DUPLEX,
             ReadFile, WriteFile,
         },
+        System::Console::FreeConsole,
         System::Pipes::{
             ConnectNamedPipe, CreateNamedPipeW, DisconnectNamedPipe, PIPE_READMODE_MESSAGE,
             PIPE_TYPE_MESSAGE, PIPE_WAIT, WaitNamedPipeW,
         },
-        System::Threading::DETACHED_PROCESS,
         UI::WindowsAndMessaging::{MB_ICONWARNING, MB_OK, MessageBoxW},
     },
     core::{HSTRING, PCWSTR, w},
@@ -32,6 +31,8 @@ pub const STOP_COMMAND: &str = "STOP";
 const PIPE_NAME: PCWSTR = w!(r"\\.\pipe\amdlert");
 
 pub fn run() -> AnyResult {
+    unsafe { FreeConsole() }.ok();
+
     let running = Arc::new(AtomicBool::new(true));
     let flag = Arc::clone(&running);
 
@@ -71,10 +72,7 @@ pub fn run() -> AnyResult {
 }
 
 pub fn spawn() -> AnyResult {
-    Command::new(env::current_exe()?)
-        .arg(DAEMON_FLAG)
-        .creation_flags(DETACHED_PROCESS.0)
-        .spawn()?;
+    Command::new(env::current_exe()?).arg(DAEMON_FLAG).spawn()?;
     Ok(())
 }
 
