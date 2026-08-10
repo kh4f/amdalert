@@ -4,7 +4,7 @@
 		<img alt="logo" src="https://raw.githubusercontent.com/kh4f/amdlert/refs/heads/assets/logo-light.png">
 	</picture>
 	<br>
-	A lightweight <b>watchdog</b> for your <b>AMD GPU temperature</b>
+	A lightweight <b>temperature watchdog</b> for your AMD GPU
 	<br><br>
 	<p>
 		<a href='https://github.com/kh4f/amdlert/releases'><img alt="release" src="https://img.shields.io/github/v/tag/kh4f/amdlert?style=flat-square&labelColor=FC0042&color=D5CAFD&label=%F0%9F%8F%B7%EF%B8%8F%20release"></a>&nbsp;
