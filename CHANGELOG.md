@@ -1,6 +1,14 @@
 # Changelog
 
 
+## &ensp; [` 📦 v4.0.2  `](https://github.com/kh4f/amdlert/compare/v4.0.1...v4.0.2)
+
+### &emsp; 🩹 Fixes
+- **No console window on autostart**: the daemon now detaches from the console via `FreeConsole`, so starting it with autostart (or from the CLI) no longer flashes or keeps an empty terminal window. [🡥](https://github.com/kh4f/amdlert/commit/f8078cd)
+
+##### &emsp;&emsp; [Commit log](https://github.com/kh4f/amdlert/compare/v4.0.1...v4.0.2) &ensp;•&ensp; Aug 10, 2026
+
+
 ## &ensp; [` 📦 v4.0.1  `](https://github.com/kh4f/amdlert/compare/v4.0.0...v4.0.1)
 
 ### &emsp; 🩹 Fixes
