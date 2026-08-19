@@ -11,9 +11,12 @@ use windows::{
         Storage::FileSystem::{
             GetFileVersionInfoSizeW, GetFileVersionInfoW, VS_FIXEDFILEINFO, VerQueryValueW,
         },
-        System::Registry::{
-            HKEY, HKEY_CURRENT_USER, KEY_QUERY_VALUE, KEY_SET_VALUE, REG_SZ, RegCloseKey,
-            RegDeleteValueW, RegOpenKeyExW, RegQueryValueExW, RegSetValueExW,
+        System::{
+            Console::{ATTACH_PARENT_PROCESS, AllocConsole, AttachConsole},
+            Registry::{
+                HKEY, HKEY_CURRENT_USER, KEY_QUERY_VALUE, KEY_SET_VALUE, REG_SZ, RegCloseKey,
+                RegDeleteValueW, RegOpenKeyExW, RegQueryValueExW, RegSetValueExW,
+            },
         },
     },
     core::{PCWSTR, w},
@@ -29,6 +32,8 @@ const RUN_KEY: PCWSTR = w!(r"Software\Microsoft\Windows\CurrentVersion\Run");
 const FEEDBACK_DELAY: Duration = Duration::from_millis(500);
 
 pub fn run() -> AnyResult {
+    attach_console()?;
+
     let mut cfg = config::Config::load();
     let version = get_app_version()?;
 
@@ -77,6 +82,13 @@ pub fn run() -> AnyResult {
             _ => {}
         }
     }
+}
+
+fn attach_console() -> AnyResult {
+    if unsafe { AttachConsole(ATTACH_PARENT_PROCESS) }.is_err() {
+        unsafe { AllocConsole() }?;
+    }
+    Ok(())
 }
 
 fn print_menu(daemon_running: bool, gpu: &adlx::GpuInfo, threshold: u32, version: &str) {

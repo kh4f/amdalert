@@ -14,7 +14,6 @@ use windows::{
             CreateFileW, FILE_ATTRIBUTE_NORMAL, FILE_SHARE_NONE, OPEN_EXISTING, PIPE_ACCESS_DUPLEX,
             ReadFile, WriteFile,
         },
-        System::Console::FreeConsole,
         System::Pipes::{
             ConnectNamedPipe, CreateNamedPipeW, DisconnectNamedPipe, PIPE_READMODE_MESSAGE,
             PIPE_TYPE_MESSAGE, PIPE_WAIT, WaitNamedPipeW,
@@ -31,8 +30,6 @@ pub const STOP_COMMAND: &str = "STOP";
 const PIPE_NAME: PCWSTR = w!(r"\\.\pipe\amdlert");
 
 pub fn run() -> AnyResult {
-    unsafe { FreeConsole() }.ok();
-
     let running = Arc::new(AtomicBool::new(true));
     let flag = Arc::clone(&running);
 

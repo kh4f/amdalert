@@ -1,3 +1,5 @@
+#![windows_subsystem = "windows"]
+
 mod adlx;
 mod cli;
 mod config;
