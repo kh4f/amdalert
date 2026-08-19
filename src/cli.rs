@@ -45,42 +45,37 @@ pub fn run() -> AnyResult {
         let daemon_running = daemon::is_daemon_running();
         let gpu = adlx::gpu_info()?;
 
-        print_menu(daemon_running, &gpu, cfg.threshold, &version);
+        print_menu(daemon_running, &gpu, cfg.threshold, &version)?;
 
         match read_choice()?.as_str() {
             "1" if daemon_running => {
                 daemon::send_message(STOP_COMMAND)?;
-                println!("Daemon stopped");
-                thread::sleep(FEEDBACK_DELAY);
+                feedback("Daemon stopped")?;
             }
             "1" => {
                 daemon::spawn()?;
-                println!("Daemon started");
-                thread::sleep(FEEDBACK_DELAY);
+                feedback("Daemon started")?;
             }
             "2" => {
                 print!("New threshold (°C): ");
-                io::stdout().flush().ok();
+				io::stdout().flush()?;
                 match read_choice()?.parse::<u32>() {
                     Ok(val) => {
                         cfg.set_threshold(val)?;
-                        println!("Threshold set to {val}°C");
+                        feedback(&format!("Threshold set to {val}°C"))?;
                     }
                     Err(_) => {
-                        println!("Invalid number");
+                        feedback("Invalid number")?;
                     }
                 }
-                thread::sleep(FEEDBACK_DELAY);
             }
             "3" if autostart_enabled() => {
                 set_autostart(false)?;
-                println!("Autostart disabled");
-                thread::sleep(FEEDBACK_DELAY);
+                feedback("Autostart disabled")?;
             }
             "3" => {
                 set_autostart(true)?;
-                println!("Autostart enabled");
-                thread::sleep(FEEDBACK_DELAY);
+                feedback("Autostart enabled")?;
             }
             "4" => break Ok(()),
             _ => {}
@@ -102,7 +97,7 @@ fn attach_console() -> AnyResult {
     Ok(())
 }
 
-fn print_menu(daemon_running: bool, gpu: &adlx::GpuInfo, threshold: u32, version: &str) {
+fn print_menu(daemon_running: bool, gpu: &adlx::GpuInfo, threshold: u32, version: &str) -> AnyResult {
     let (green, red, reset) = ("\x1B[32m", "\x1B[31m", "\x1B[0m");
 
     print!(
@@ -146,7 +141,8 @@ Actions
         }
     );
 
-    io::stdout().flush().ok();
+    io::stdout().flush()?;
+	Ok(())
 }
 
 fn read_choice() -> AnyResult<String> {
@@ -265,5 +261,12 @@ fn set_autostart(enabled: bool) -> AnyResult {
     unsafe {
         RegCloseKey(hkey)
     };
+    Ok(())
+}
+
+fn feedback(msg: &str) -> AnyResult {
+    print!("{msg}");
+	io::stdout().flush()?;
+    thread::sleep(FEEDBACK_DELAY);
     Ok(())
 }
