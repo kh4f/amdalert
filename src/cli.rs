@@ -13,9 +13,10 @@ use windows::{
         },
         System::{
             Console::{
-                ATTACH_PARENT_PROCESS, AllocConsole, AttachConsole, CONSOLE_MODE,
-                ENABLE_VIRTUAL_TERMINAL_PROCESSING, GetConsoleMode, GetStdHandle,
-                SetConsoleMode, STD_OUTPUT_HANDLE,
+                ATTACH_PARENT_PROCESS, AllocConsole, AttachConsole, CONSOLE_MODE, COORD,
+                ENABLE_VIRTUAL_TERMINAL_PROCESSING, GetConsoleMode, GetStdHandle, SMALL_RECT,
+                STD_OUTPUT_HANDLE, SetConsoleMode, SetConsoleScreenBufferSize,
+                SetConsoleWindowInfo,
             },
             Registry::{
                 HKEY, HKEY_CURRENT_USER, KEY_QUERY_VALUE, KEY_SET_VALUE, REG_SZ, RegCloseKey,
@@ -57,7 +58,7 @@ pub fn run() -> AnyResult {
             }
             "2" => {
                 print!("New threshold (°C): ");
-				io::stdout().flush()?;
+                io::stdout().flush()?;
                 match read_choice()?.parse::<u32>() {
                     Ok(val) => {
                         cfg.set_threshold(val)?;
@@ -85,6 +86,27 @@ pub fn run() -> AnyResult {
 fn attach_console() -> AnyResult {
     if unsafe { AttachConsole(ATTACH_PARENT_PROCESS) }.is_err() {
         unsafe { AllocConsole() }?;
+
+        let (cols, rows): (i16, i16) = (39, 14);
+        let handle = unsafe { GetStdHandle(STD_OUTPUT_HANDLE) }?;
+
+        #[expect(unused_must_use)]
+        unsafe {
+            SetConsoleWindowInfo(
+                handle,
+                true,
+                &SMALL_RECT {
+                    Left: 0,
+                    Top: 0,
+                    Right: cols - 1,
+                    Bottom: rows - 1,
+                },
+            )
+        };
+        #[expect(unused_must_use)]
+        unsafe {
+            SetConsoleScreenBufferSize(handle, COORD { X: cols, Y: rows })
+        };
     }
 
     // enable ANSI escape codes
@@ -96,7 +118,12 @@ fn attach_console() -> AnyResult {
     Ok(())
 }
 
-fn print_menu(daemon_running: bool, gpu: &adlx::GpuInfo, threshold: u32, version: &str) -> AnyResult {
+fn print_menu(
+    daemon_running: bool,
+    gpu: &adlx::GpuInfo,
+    threshold: u32,
+    version: &str,
+) -> AnyResult {
     let (green, red, reset) = ("\x1B[32m", "\x1B[31m", "\x1B[0m");
 
     print!(
@@ -141,7 +168,7 @@ Actions
     );
 
     io::stdout().flush()?;
-	Ok(())
+    Ok(())
 }
 
 fn read_choice() -> AnyResult<String> {
@@ -265,7 +292,7 @@ fn set_autostart(enabled: bool) -> AnyResult {
 
 fn feedback(msg: &str) -> AnyResult {
     print!("{msg}");
-	io::stdout().flush()?;
+    io::stdout().flush()?;
     thread::sleep(Duration::from_millis(500));
     Ok(())
 }
