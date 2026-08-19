@@ -2,8 +2,6 @@ use std::{env, fs, path::PathBuf};
 
 use serde::{Deserialize, Serialize};
 
-const CONFIG_FILE: &str = "config.json";
-
 #[derive(Serialize, Deserialize)]
 pub struct Config {
     pub threshold: u32,
@@ -19,7 +17,7 @@ impl Config {
     fn path() -> PathBuf {
         let mut path = env::current_exe().expect("failed to get exe path");
         path.pop();
-        path.push(CONFIG_FILE);
+        path.push("config.json");
         path
     }
 

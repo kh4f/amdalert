@@ -33,7 +33,6 @@ use crate::{
 
 const APP_NAME: PCWSTR = w!("AMDlert");
 const RUN_KEY: PCWSTR = w!(r"Software\Microsoft\Windows\CurrentVersion\Run");
-const FEEDBACK_DELAY: Duration = Duration::from_millis(500);
 
 pub fn run() -> AnyResult {
     attach_console()?;
@@ -267,6 +266,6 @@ fn set_autostart(enabled: bool) -> AnyResult {
 fn feedback(msg: &str) -> AnyResult {
     print!("{msg}");
 	io::stdout().flush()?;
-    thread::sleep(FEEDBACK_DELAY);
+    thread::sleep(Duration::from_millis(500));
     Ok(())
 }
