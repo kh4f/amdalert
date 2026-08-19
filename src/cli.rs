@@ -12,7 +12,11 @@ use windows::{
             GetFileVersionInfoSizeW, GetFileVersionInfoW, VS_FIXEDFILEINFO, VerQueryValueW,
         },
         System::{
-            Console::{ATTACH_PARENT_PROCESS, AllocConsole, AttachConsole},
+            Console::{
+                ATTACH_PARENT_PROCESS, AllocConsole, AttachConsole, CONSOLE_MODE,
+                ENABLE_VIRTUAL_TERMINAL_PROCESSING, GetConsoleMode, GetStdHandle,
+                SetConsoleMode, STD_OUTPUT_HANDLE,
+            },
             Registry::{
                 HKEY, HKEY_CURRENT_USER, KEY_QUERY_VALUE, KEY_SET_VALUE, REG_SZ, RegCloseKey,
                 RegDeleteValueW, RegOpenKeyExW, RegQueryValueExW, RegSetValueExW,
@@ -88,14 +92,22 @@ fn attach_console() -> AnyResult {
     if unsafe { AttachConsole(ATTACH_PARENT_PROCESS) }.is_err() {
         unsafe { AllocConsole() }?;
     }
+
+    // enable ANSI escape codes
+    let mut mode = CONSOLE_MODE(0);
+    let handle = unsafe { GetStdHandle(STD_OUTPUT_HANDLE) }?;
+    if unsafe { GetConsoleMode(handle, &mut mode) }.is_ok() {
+        unsafe { SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING) }?;
+    }
     Ok(())
 }
 
 fn print_menu(daemon_running: bool, gpu: &adlx::GpuInfo, threshold: u32, version: &str) {
+    let (green, red, reset) = ("\x1B[32m", "\x1B[31m", "\x1B[0m");
+
     print!(
         "\x1B[2J\x1B[H\
-🚨 AMDlert v{version}
-  Homepage: https://github.com/kh4f/amdlert
+AMDlert v{version}
 
 GPU ({gpu_name})
   Temperature:  {gpu_temperature}°C
@@ -103,7 +115,7 @@ GPU ({gpu_name})
 
 Actions
   1) {daemon_action:<19} {daemon_status}
-  2) {threshold_action:<22} {threshold}°C
+  2) {threshold_action:<19} {threshold}°C
   3) {autostart_action:<19} {autostart_status}
   4) Exit
 
@@ -111,20 +123,15 @@ Actions
         gpu_name = gpu.name,
         gpu_temperature = gpu.temperature,
         gpu_fan_speed = gpu.fan_speed,
-        daemon_status = if daemon_running {
-            "🟢 running"
-        } else {
-            "🔴 not running"
-        },
-        autostart_status = if autostart_enabled() {
-            "🟢 enabled"
-        } else {
-            "🔴 disabled"
-        },
         daemon_action = if daemon_running {
             "Stop daemon"
         } else {
-            "Run daemon"
+            "Start daemon"
+        },
+        daemon_status = if daemon_running {
+            format!("{green}running{reset}")
+        } else {
+            format!("{red}not running{reset}")
         },
         threshold_action = "Set threshold",
         autostart_action = if autostart_enabled() {
@@ -132,6 +139,11 @@ Actions
         } else {
             "Enable autostart"
         },
+        autostart_status = if autostart_enabled() {
+            format!("{green}enabled{reset}")
+        } else {
+            format!("{red}disabled{reset}")
+        }
     );
 
     io::stdout().flush().ok();
