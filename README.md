@@ -22,7 +22,7 @@
 
 ## 👀 Overview
 
-**AMDlert** */ˌɛmdiːˈlɝːt/* is a single-binary CLI + daemon for Windows that monitors your AMD GPU temperature every 10s and alerts you when it exceeds a configurable threshold.
+**AMDlert** */ˌɛmdiːˈlɝːt/* is a background daemon for Windows that monitors your AMD GPU temperature every 10s and alerts you when it exceeds a configurable threshold.
 
 ## 📥 Install
 
