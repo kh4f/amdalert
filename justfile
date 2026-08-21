@@ -2,7 +2,8 @@ lint:
 	cargo fmt --check
 	cargo clippy -- -D warnings
 
-build:
+build action="":
+	{{ if action == "kill" { "taskkill //f //im AMDlert.exe || true" } else { "" } }}
 	cargo build --release
 
 refresh-icons:
