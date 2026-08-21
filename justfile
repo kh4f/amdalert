@@ -4,3 +4,7 @@ lint:
 
 build:
 	cargo build --release
+
+refresh-icons:
+	taskkill //f //im explorer.exe
+	start explorer.exe
