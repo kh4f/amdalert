@@ -7,9 +7,9 @@
 	A lightweight <b>temperature watchdog</b> for your AMD GPU
 	<br><br>
 	<p>
-		<a href='https://github.com/kh4f/amdlert/releases'><img alt="release" src="https://img.shields.io/github/v/tag/kh4f/amdlert?style=flat-square&labelColor=FC0042&color=D5CAFD&label=%F0%9F%8F%B7%EF%B8%8F%20release"></a>&nbsp;
-		<a href="https://github.com/kh4f/amdlert/releases"><img alt="downloads" src="https://img.shields.io/github/downloads/kh4f/amdlert/total?style=flat-square&labelColor=FC0042&color=D5CAFD&label=%F0%9F%93%A5%20downloads" /></a>&nbsp;
-		<a href="https://github.com/kh4f/amdlert/blob/main/LICENSE"><img alt="license" src="https://img.shields.io/github/license/kh4f/amdlert?style=flat-square&labelColor=FC0042&color=D5CAFD&label=%F0%9F%9B%A1%EF%B8%8F%20license"></a>
+		<a href='https://github.com/kh4f/amdlert/releases'><img alt="release" src="https://img.shields.io/github/v/tag/kh4f/amdlert?style=flat-square&labelColor=F50045&color=D5CAFD&label=%F0%9F%8F%B7%EF%B8%8F%20release"></a>&nbsp;
+		<a href="https://github.com/kh4f/amdlert/releases"><img alt="downloads" src="https://img.shields.io/github/downloads/kh4f/amdlert/total?style=flat-square&labelColor=F50045&color=D5CAFD&label=%F0%9F%93%A5%20downloads" /></a>&nbsp;
+		<a href="https://github.com/kh4f/amdlert/blob/main/LICENSE"><img alt="license" src="https://img.shields.io/github/license/kh4f/amdlert?style=flat-square&labelColor=F50045&color=D5CAFD&label=%F0%9F%9B%A1%EF%B8%8F%20license"></a>
 	</p>
 	<b>
 		<a href="#-overview">Overview</a>&nbsp; •&nbsp;
