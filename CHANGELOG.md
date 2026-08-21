@@ -1,6 +1,18 @@
 # Changelog
 
 
+## &ensp; [` 📦 v4.0.3  `](https://github.com/kh4f/amdlert/compare/v4.0.2...v4.0.3)
+
+### &emsp; 🩹 Fixes
+- **No console window on autostart (for real this time)**: the app now runs as a GUI-subsystem process, so the daemon no longer flashes a console window when launched from Windows autostart. [🡥](https://github.com/kh4f/amdlert/commit/a9ba87d)
+
+### &emsp; 🎨 Style
+- **Colored status indicators**: replaced emoji status markers with ANSI-colored text. [🡥](https://github.com/kh4f/amdlert/commit/a8ba357)
+- **Consistent console window size**: the CLI now opens with a fixed size (40×15). [🡥](https://github.com/kh4f/amdlert/commit/951ed23)
+
+##### &emsp;&emsp; [Commit log](https://github.com/kh4f/amdlert/compare/v4.0.2...v4.0.3) &ensp;•&ensp; Aug 21, 2026
+
+
 ## &ensp; [` 📦 v4.0.2  `](https://github.com/kh4f/amdlert/compare/v4.0.1...v4.0.2)
 
 ### &emsp; 🩹 Fixes
