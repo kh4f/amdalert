@@ -130,7 +130,7 @@ fn print_menu(
         "\x1B[2J\x1B[H\
 AMDlert v{version}
 
-GPU ({gpu_name})
+{gpu_name}
   Temperature:  {gpu_temperature}°C
   Fan speed:    {gpu_fan_speed} RPM
 
