@@ -19,7 +19,7 @@ dependencies = [
 
 [[package]]
 name = "amdlert"
-version = "4.0.3"
+version = "4.0.4"
 dependencies = [
  "cc",
  "serde",

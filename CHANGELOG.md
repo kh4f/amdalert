@@ -1,5 +1,12 @@
 # Changelog
 
+## &ensp; [` 📦 v4.0.4  `](https://github.com/kh4f/amdlert/compare/v4.0.3...v4.0.4)
+
+### &emsp; 🎨 Style
+- **Simplified GPU name in menu header**: removed the redundant `GPU (` … `)` wrapper so the GPU name is displayed directly. [🡥](https://github.com/kh4f/amdlert/commit/ca134ce)
+
+##### &emsp;&emsp; [Commit log](https://github.com/kh4f/amdlert/compare/v4.0.3...v4.0.4) &ensp;•&ensp; Aug 23, 2026
+
 
 ## &ensp; [` 📦 v4.0.3  `](https://github.com/kh4f/amdlert/compare/v4.0.2...v4.0.3)
 
