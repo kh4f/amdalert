@@ -109,7 +109,7 @@ fn attach_console() -> AnyResult {
         };
     }
 
-    // enable ANSI escape codes
+    // Enable ANSI escape codes
     let mut mode = CONSOLE_MODE(0);
     let handle = unsafe { GetStdHandle(STD_OUTPUT_HANDLE) }?;
     if unsafe { GetConsoleMode(handle, &mut mode) }.is_ok() {
